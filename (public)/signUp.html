@@ -57,8 +57,7 @@
 		const email = document.getElementById("email").value;
 		const pass = document.getElementById("pass").value;
 		const auth = firebase.auth();
-		console.log(email);
-		console.log(pass);
+		
 		
 		const promise = auth.createUserWithEmailAndPassword(email,pass);
 		promise.then(user => window.location.replace("https://dyeup-34223.web.app/home.html"));
@@ -69,7 +68,7 @@
 	function initApp(){	
 		firebase.auth().onAuthStateChanged(firebaseUser => {
 			if(firebaseUser){
-			console.log(firebaseUser);
+			
 			window.location.replace("https://dyeup-34223.web.app/home.html")
 			}
 			else{

@@ -91,7 +91,6 @@
 	  function initApp(){	
 		firebase.auth().onAuthStateChanged(firebaseUser => {
 			if(firebaseUser){
-			console.log(firebaseUser);
 			window.location.replace("https://dyeup-34223.web.app/home.html")
 			}
 			else{
