@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<!-- Stephen Morrissey Project 2 -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dye</title>
+  <link rel="stylesheet" href="Assets/css/style.css" />
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body >
+  <main>
+    <section>
+      
+        <h1>Dye Up</h1>
+        
+        
+		<div id = "pic" style="background-image: url('Assets/pics/dice.png');">
+		<form action="/action_page.php">
+		<label for="fname">Username:</label>
+		<input type="text" id="uname" name="fname"><br><br>
+		<label for="lname">Email:</label>
+		<input type="text" id="email" name="email"><br><br>
+		<label for="lname">Password:</label>
+		<input type="password" id="pass" name="pass"><br><br>
+		<input type="submit" value="Submit" onclick="signUp()">
+		</form>
+		
+		</div>
+      
+    </section>
+  </main>
+  <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-performance.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <script>
+		function signUp() {
+		
+		firebase.auth().createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("pass").value)
+  .then((user) => {
+    // Signed in 
+    // ...
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // ..
+  });
+			   // The function returns the product of p1 and p2
+		}
+  </script>
+</body>
+</html>
