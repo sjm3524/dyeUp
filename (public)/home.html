@@ -12,18 +12,17 @@
   <main>
     <section>
       
-        <h1>Dye Up</h1>
+        <h1>Homepage</h1>
         
         
 		<div id = "pic" style="background-image: url('Assets/pics/dice.png');">
 		
-		<label for="fname">Username:</label>
-		<input type="text" id="uname" name="fname"><br><br>
+		
 		<label for="lname">Email:</label>
 		<input type="text" id="email" name="email"><br><br>
 		<label for="lname">Password:</label>
 		<input type="password" id="pass" name="pass"><br><br>
-		<button id="btnSignUp">Sign Up</button>
+		<button onclick="logIn()">Log In</button>
 		
 		
 		</div>
@@ -48,29 +47,11 @@
     -->
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
   <script>
-  
-	const btnSignUp = document.getElementById("btnSignUp");
-	
-	
-	btnSignUp.addEventListener('click', e => {
-	
-		const email = document.getElementById("email").value;
-		const pass = document.getElementById("pass").value;
-		const auth = firebase.auth();
-		console.log(email);
-		console.log(pass);
-		
-		const promise = auth.createUserWithEmailAndPassword(email,pass);
-		promise.then(user => window.location.replace("https://dyeup-34223.web.app/home.html"));
-		promise.catch(e => console.log(e.message));
-		});
-	
-	
-	function initApp(){	
+		function initApp(){	
 		firebase.auth().onAuthStateChanged(firebaseUser => {
 			if(firebaseUser){
 			console.log(firebaseUser);
-			window.location.replace("https://dyeup-34223.web.app/home.html")
+			
 			}
 			else{
 				console.log("not logged in");
@@ -84,7 +65,6 @@
 	window.onload = function() {
 		initApp();
 	};
-		
   </script>
 </body>
 </html>

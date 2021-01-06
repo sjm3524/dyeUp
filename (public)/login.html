@@ -17,13 +17,12 @@
         
 		<div id = "pic" style="background-image: url('Assets/pics/dice.png');">
 		
-		<label for="fname">Username:</label>
-		<input type="text" id="uname" name="fname"><br><br>
+		
 		<label for="lname">Email:</label>
 		<input type="text" id="email" name="email"><br><br>
 		<label for="lname">Password:</label>
 		<input type="password" id="pass" name="pass"><br><br>
-		<button id="btnSignUp">Sign Up</button>
+		<button id="btnLogIn">Log In</button>
 		
 		
 		</div>
@@ -49,10 +48,11 @@
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
   <script>
   
-	const btnSignUp = document.getElementById("btnSignUp");
+	const btnLogIn = document.getElementById("btnLogIn");
 	
 	
-	btnSignUp.addEventListener('click', e => {
+	
+	btnLogIn.addEventListener('click', e => {
 	
 		const email = document.getElementById("email").value;
 		const pass = document.getElementById("pass").value;
@@ -60,10 +60,15 @@
 		console.log(email);
 		console.log(pass);
 		
-		const promise = auth.createUserWithEmailAndPassword(email,pass);
+		const promise = auth.signInWithEmailAndPassword(email,pass);
 		promise.then(user => window.location.replace("https://dyeup-34223.web.app/home.html"));
 		promise.catch(e => console.log(e.message));
 		});
+		
+	
+	
+	
+	
 	
 	
 	function initApp(){	
@@ -84,7 +89,8 @@
 	window.onload = function() {
 		initApp();
 	};
-		
+  
+  
   </script>
 </body>
 </html>
