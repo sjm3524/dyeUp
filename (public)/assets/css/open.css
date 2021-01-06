@@ -54,6 +54,14 @@
 		border-collapse: collapse;
 		border-spacing: 0;
 	}
+	table td {
+		border-left: 1px solid #000;
+		border-right: 1px solid #000;
+	}
+	table tr {
+		border-top: 1px solid #000;
+		border-bottom: 1px solid #000;
+	}
 
 	body {
 		-webkit-text-size-adjust: none;
