@@ -56,11 +56,24 @@
 	
 		const email = document.getElementById("email").value;
 		const pass = document.getElementById("pass").value;
+		const uname = document.getElementById("uname").value;
 		const auth = firebase.auth();
 		
 		
 		const promise = auth.createUserWithEmailAndPassword(email,pass);
-		promise.then(user => window.location.replace("https://dyeup-34223.web.app/home.html"));
+		promise.then(user => {
+		
+		var uid = user.user.uid;
+		console.log(uid)
+		firebase.database().ref('users/' + uid).set({
+		username: uname,
+		email: email,
+		//profile_picture : imageUrl
+		});
+		
+		
+		
+		});
 		promise.catch(e => console.log(e.message));
 		});
 	
