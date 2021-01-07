@@ -22,8 +22,8 @@
 						<header>
 							<table style="width:100%; ">
 								<tr>
-									<th colspan="2" class="score" style = "font-size:300%;">4</td>
-									<th colspan="2" class ="score" style = "font-size:300%;">6</td>
+									<th colspan="2" class="score" id="team1" style = "font-size:300%;">4</td>
+									<th colspan="2" class ="score" id="team2" style = "font-size:300%;">6</td>
 								</tr>
 								<tr>
 									
@@ -37,9 +37,9 @@
 									
 								</tr>
 								<tr>
-									<td>Player 2</td>
+									<td id="p1">Player 1</td>
 									
-									<td>Player 4</td>
+									<td id="p3">Player 3</td>
 								</tr>
 								
 								
@@ -51,9 +51,9 @@
 										<td><img src="assets/css/images/default.png" class="game-icon" width="50px" alt="player1"></td>	
 								</tr>
 								<tr>
-									<td>Player 1</td>
+									<td id="p2">Player 2</td>
 									
-									<td>Player 3</td>
+									<td id="p4">Player 4</td>
 								</tr>
 							  </table>
 							<ul>
@@ -75,11 +75,133 @@
 			</div>
 
 		<!-- Scripts -->
+		
+		
+		<script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-performance.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+		
+		
+		
+		
+		
 			<script>
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
+				
+				
+				
+				
+				
+				async function initApp(){	
+					
+					var gameId;
+				
+					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
+					
+						if (snapshot.val() == null){
+							return alert("No game exists");
+						}
+						else{
+							var games = snapshot.forEach(function (childSnapshot) {
+
+								var value = childSnapshot.val();
+								console.log(value.id);
+								gameId=value.id;
+								if (value.isActive){
+							
+									var gameRef = firebase.database().ref('games/' + gameId);
+									gameRef.on('value', (snapshot) => {
+										
+										updateScore(snapshot.val());
+									});
+								}
+								else{
+								
+									return alert("No game exists");
+								}
+							
+							});
+						}
+					});
+				
+				
+				
+					firebase.auth().onAuthStateChanged(firebaseUser => {
+						if(firebaseUser){
+						
+							
+						
+						}
+						else{
+							//window.location.replace("https://dyeup-34223.web.app/index.html")
+						}
+					  
+					  });
+				}
+				
+
+				
+				window.onload = function() {
+					initApp();
+				};
+				
+				async function updateScore(game){
+					var t1Score = document.getElementById("team1");
+					var t2Score = document.getElementById("team2");
+					var p1 = document.getElementById("p1");
+					var p2 = document.getElementById("p2");
+					var p3 = document.getElementById("p3");
+					var p4 = document.getElementById("p4");
+					
+					t1Score.innerHTML = game.t1Score;
+					t2Score.innerHTML = game.t2Score;
+					
+					if (!game.isActive){
+						//TODO 
+						// Load next game from queue or return to free table
+					
+					}
+					
+				
+				}
+				
+				async function setNames(game){
+				
+					p1.innerHTML = await getUsername(game.player1);
+					p2.innerHTML = await getUsername(game.player2);
+					p3.innerHTML = await getUsername(game.player3);
+					p4.innerHTML = await getUsername(game.player4);
+				
+				}
+				
+				async function getUsername(uId){
+					
+					var snapshot = await firebase.database().ref('/users/' + uId).once('value');
+						return snapshot.val().username;
+					
+				
+				}
+				
+				
+				
+				
+				
 			</script>
 
 	</body>
