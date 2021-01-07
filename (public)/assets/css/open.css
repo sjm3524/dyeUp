@@ -21,7 +21,7 @@
 	footer, header, hgroup, menu, nav, output, ruby,
 	section, summary, time, mark, audio, video {
 		margin: 0;
-		padding: 0;
+		padding: 2px;
 		border: 0;
 		font-size: 100%;
 		font: inherit;
@@ -32,6 +32,22 @@
 	footer, header, hgroup, menu, nav, section {
 		display: block;
 	}
+	
+	.game-icon{
+		padding-top: 1em;
+	}
+
+	.score{
+		border-bottom: 1px solid black;
+	}
+	.mid-elmnt-right{
+		border-right: 1px solid black;
+	}
+	
+	.mid-elmnt-left{
+		border-left: 1px solid black;
+	}
+
 
 	body {
 		line-height: 1;
@@ -56,10 +72,13 @@
 		border:1px solid black;
 	}
 	table td {
+		text-align: center;
+		vertical-align: middle;
 		/*border-left: 1px solid #000;
 		border-right: 1px solid #000;*/
 	}
 	table tr {
+		text-align: center;
 		/*border-top: 1px solid #000;
 		border-bottom: 1px solid #000;*/
 	}

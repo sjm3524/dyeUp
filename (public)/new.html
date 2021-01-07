@@ -32,14 +32,14 @@
 								</tr>
 								
 								<tr>
-								  <td><input type="text" id="player3" placeholder="Player 2"></td>
+								  <td><input type="text" id="player2" placeholder="Player 2"></td>
 								  <td><input type="text" id="player4" placeholder="Player 4"></td>
 								</tr>
 								
 							  </table>
 							<ul>
 								<p></p>
-								<p><a href="game.html">Start</a></p>
+								<p><a  id="newGameBtn" class="button">Start</a></p>
 								<p style="margin-top: -20px;"><a href="open.html">&#8592; Back</a></p>
 							</ul>
 							
@@ -60,11 +60,92 @@
 			</div>
 
 		<!-- Scripts -->
+		<script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-performance.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+		
+		
+		
 			<script>
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
+				
+				const newGameBtn = document.getElementById("newGameBtn");
+				
+	
+	
+				newGameBtn.addEventListener('click', e => {
+				
+					
+					const player1 = document.getElementById("player1");
+					const player2 = document.getElementById("player2");
+					const player3 = document.getElementById("player3");
+					const player4 = document.getElementById("player4");
+					
+					
+					firebase.database().ref('games/').push({
+					player1: player1.value,
+					player2: player2.value,
+					player3: player3.value,
+					player4: player4.value,
+					p1Points: 0,
+					p2Points: 0,
+					p3Points: 0,
+					p4Points:0,
+					p1Plunks: 0,
+					p2Plunks: 0,
+					p3Plunks: 0,
+					p4Plunks:0,
+					t1Score: 0,
+					t2Score:0,
+					isActive: true,
+					//profile_picture : imageUrl
+					});
+					
+					
+					});
+		
+	
+	
+	
+	
+	
+	
+				function initApp(){	
+					firebase.auth().onAuthStateChanged(firebaseUser => {
+						if(firebaseUser){
+						
+						}
+						else{
+							window.location.replace("https://dyeup-34223.web.app/index.html")
+						}
+					  
+					  });
+				}
+				
+
+				
+				window.onload = function() {
+					initApp();
+				};
+				
+				
+				
 			</script>
 
 	</body>
