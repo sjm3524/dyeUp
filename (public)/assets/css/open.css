@@ -1081,6 +1081,15 @@
 		body.is-ie #wrapper {
 			height: 100%;
 		}
-		
+/* Profile */
+	#stat {
+		text-align: left;
+		padding-left: 50px;
+	}
+	#data {
+		text-align: center;
+		padding-right: 15px;
+	}
 
-/* */
+
+
