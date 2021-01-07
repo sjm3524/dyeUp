@@ -92,38 +92,104 @@
 				newGameBtn.addEventListener('click', e => {
 				
 					
-					const player1 = document.getElementById("player1");
-					const player2 = document.getElementById("player2");
-					const player3 = document.getElementById("player3");
-					const player4 = document.getElementById("player4");
+					const p1 = document.getElementById("player1").value;
+					const p2 = document.getElementById("player2").value;
+					const p3 = document.getElementById("player3").value;
+					const p4 = document.getElementById("player4").value;
+					
+					var playersName = new Array(p1,p2,p3,p4);
 					
 					
-					firebase.database().ref('games/').push({
-					player1: player1.value,
-					player2: player2.value,
-					player3: player3.value,
-					player4: player4.value,
-					p1Points: 0,
-					p2Points: 0,
-					p3Points: 0,
-					p4Points:0,
-					p1Plunks: 0,
-					p2Plunks: 0,
-					p3Plunks: 0,
-					p4Plunks:0,
-					t1Score: 0,
-					t2Score:0,
-					isActive: true,
+					
+					
+					
+					
+					
+					
+					
+					createTeams(playersName);
+					
+					
+					
+					
+					
+					});
+					
+					
+		
+				async function createTeams(playersName){
+					var gameRef = await createGame(playersName);
+					var gameId= gameRef.key;
+					console.log(gameId);
+					
+					var playersId =[]
+					for (i=0; i<4; i++){
+						var snapshot = await firebase.database().ref('/names/' + playersName[i]).once('value');
+						if (snapshot.val() == null){
+							return alert("The user " + playersName[i] +" does not exist");
+						}
+						else{
+							playersId.push(snapshot.val().uid);
+						}
+					}
+					var team1 = playersId.slice(0,2);
+					var team2= playersId.slice(2);
+					
+					team1.sort();
+					team2.sort();
+					
+					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).push(gameId);
+					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).push(gameId);
+					
+					
+				
+				
+				}
+				async function createGame(playersName){
+				
+					var playersId =[]
+					var playersObj = [];
+				
+					for (i=0; i<4; i++){
+						var snapshot = await firebase.database().ref('/names/' + playersName[i]).once('value');
+						if (snapshot.val() == null){
+							return alert("The user " + playersName[i] +" does not exist");
+						}
+						else{
+							playersId.push(snapshot.val().uid);
+						}
+					}
+					 console.log(playersId);
+						
+					for (i=0; i<4; i++){
+					var snapshot = await firebase.database().ref('/users/' + playersId[i]).once('value');
+						playersObj.push(snapshot.val());
+					}
+					console.log(playersObj);
+				
+					return gameRef = firebase.database().ref('games/').push({
+						player1: playersObj[0],
+						player2: playersObj[1],
+						player3: playersObj[2],
+						player4: playersObj[3],
+						p1Points: 0,
+						p2Points: 0,
+						p3Points: 0,
+						p4Points:0,
+						p1Plunks: 0,
+						p2Plunks: 0,
+						p3Plunks: 0,
+						p4Plunks:0,
+						t1Score: 0,
+						t2Score:0,
+						isActive: true,
 					//profile_picture : imageUrl
 					});
 					
 					
-					});
-		
+				}
 	
-	
-	
-	
+			
 	
 	
 				function initApp(){	
