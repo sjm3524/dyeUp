@@ -39,7 +39,7 @@
 							  </table>
 							<ul>
 								<p></p>
-								<p><a href="game.html">Queue Up</a></p>
+								<p><a id="queueBtn">Queue Up</a></p>
 								<p style="margin-top: -20px;"><a href="game.html">&#8592; Back</a></p>
 							</ul>
 							
@@ -60,11 +60,97 @@
 			</div>
 
 		<!-- Scripts -->
+		
+		<script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-performance.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+		
+		
+		
 			<script>
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
+				
+				const queueBtn =document.getElementById("queueBtn");
+				const player1 =document.getElementById("player3");
+				const player2 =document.getElementById("player4");
+				
+				queueBtn.addEventListener('click', e => {
+				
+					addToQueue(player1.value, player2.value);
+				
+					
+				});
+				
+				async function addToQueue(player1, player2){
+					var playersId =[]
+					var p1Id;
+					var p2Id;
+				
+					
+						var snapshot = await firebase.database().ref('/names/' + player1).once('value');
+						if (snapshot.val() == null){
+							return alert("The user " + player1 +" does not exist");
+						}
+						else{
+							p1Id=snapshot.val().uid;
+						}
+						
+						var snapshot = await firebase.database().ref('/names/' + player2).once('value');
+						if (snapshot.val() == null){
+							return alert("The user " + player2 +" does not exist");
+						}
+						else{
+							p2Id=snapshot.val().uid;
+						}
+					
+					 
+						
+					/*for (i=0; i<4; i++){
+					var snapshot = await firebase.database().ref('/users/' + playersId[i]).once('value');
+						playersObj.push(snapshot.val());
+					}
+					console.log(playersObj);
+					*/
+				
+					firebase.database().ref('queue/').push({
+						left: p1Id,
+						right: p2Id,
+						
+					});
+				
+				
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 			</script>
 
 	</body>

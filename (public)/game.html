@@ -59,6 +59,7 @@
 							<ul>
 								<p></p>
 								<p><a id="queue" >Queue</a></p>
+								<p><a id = "endGame">End Game</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 							</ul>							
 						</header>
@@ -142,9 +143,7 @@
 							
 							});
 							
-							var gameRef = firebase.database().ref('games/' + sessionStorage.gameId);
-									gameRef.child("t1Score").on('value', (snapshot) => {updateT1(snapshot.val());});
-									gameRef.child("t2Score").on('value', (snapshot) => {updateT2(snapshot.val());});
+							
 						}
 					});
 				
@@ -169,6 +168,17 @@
 					initApp();
 				};
 				playerButtons();
+				
+				
+				var endGameBtn = document.getElementById("endGame");
+				endGameBtn.addEventListener('click', e => {
+					
+					endGame();
+					
+					
+				});
+				
+				
 				
 				function updateT1(score){
 					var t1Score = document.getElementById("team1");
@@ -207,14 +217,45 @@
 					p3.innerHTML = await getUsername(game.player3);
 					p4.innerHTML = await getUsername(game.player4);
 					
-					
+					var gameRef = firebase.database().ref('games/' + game.id);
+									gameRef.child("t1Score").on('value', (snapshot) => {updateT1(snapshot.val());});
+									gameRef.child("t2Score").on('value', (snapshot) => {updateT2(snapshot.val());});
 					
 				}
 				
 				
 				
 				
+				async function endGame(){
 				
+					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
+					
+					
+					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
+					
+						
+						
+						
+						
+							var games = snapshot.forEach(function (childSnapshot) {
+
+								var value = childSnapshot.val();
+								console.log(childSnapshot.key);
+								
+								
+								createTeams(value.left, value.right);
+								//console.log(gameRef);
+								
+								firebase.database().ref('/queue/'+childSnapshot.key).remove();
+							});
+							
+							
+						
+					});
+					
+					
+				
+				}
 				
 				async function getUsername(uId){
 					
@@ -233,7 +274,7 @@
 				}
 				
 				function playerButtons(){
-				
+					console.log(sessionStorage.gameId);
 					var p1Btn = document.getElementById("p1Image");
 					p1Btn.addEventListener('click', e => {
 			
@@ -287,6 +328,74 @@
 					
 				
 				
+				}
+				
+				async function createTeams(player1, player2){
+					var gameRef = await createGame(player1, player2);
+					
+					var gameId= gameRef.key;
+					firebase.database().ref('games/'+gameId).update({id:gameId});
+					
+					var setGameVar = await firebase.database().ref('/games/'+gameId).once('value')
+					
+					setGame(setGameVar.val());	
+						
+					
+					console.log(gameId);
+					
+					var playersId =[sessionStorage.p1, sessionStorage.p2, sessionStorage.p3, sessionStorage.p4];
+					
+					var team1 = playersId.slice(0,2);
+					var team2= playersId.slice(2);
+					
+					team1.sort();
+					team2.sort();
+					
+					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).push(gameId);
+					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).push(gameId);
+					
+					
+				
+				
+				}
+				async function createGame(player1, player2){
+				
+					var playersId =[]
+					var playersObj = [];
+					console.log("left player"+ player1);
+					console.log("right player"+ player2);
+					
+					
+						var snapshot = await firebase.database().ref('/games/' + sessionStorage.gameId).once('value');
+						if (snapshot.val().t1Score > snapshot.val().t2Score){
+							playersId = [sessionStorage.p1, sessionStorage.p2, player2, player1]
+							sessionStorage.p3 = player1;
+							sessionStorage.p4 = player2;
+						}
+						else{
+							playersId = [player1, player2, sessionStorage.p3, sessionStorage.p4]
+							sessionStorage.p1 = player1;
+							sessionStorage.p2 = player2;
+						}
+					
+					 console.log(playersId);
+						
+					
+				
+					return gameRef = firebase.database().ref('games/').push({
+						player1: sessionStorage.p1,
+						player2: sessionStorage.p2,
+						player3: sessionStorage.p3,
+						player4: sessionStorage.p4,
+						points: null,
+						t1Score: 0,
+						t2Score:0,
+						isActive: true,
+						id: null,
+					//profile_picture : imageUrl
+					});
+					
+					
 				}
 				
 				
