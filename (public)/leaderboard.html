@@ -11,6 +11,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/leaderboard.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 	</head>
 	<body class="is-preload">
 		<!-- <a>&#8592;Back</a> -->
@@ -35,41 +37,13 @@
 											  <th><span class="text">Win %</span></th>
 										  </tr>
 									  </thead>
-									  <tbody>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>14</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
+									  <tbody id="ex-table">
+										<tr> <td><a href="">Test</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
+										<!-- <tr> <td><a href="">Josh</a></td> <td>14</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
 										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
 										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
 										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-										<tr> <td><a href="">Steve</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>
-									  </tbody>
+									  --></tbody> 
 								  </table>
 								</div>
 							</div>							
@@ -86,19 +60,60 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-			<script>
-				window.onload = function() {
-					(document.getElementsByTagName( 'th' )[5]).click();
-					(document.getElementsByTagName( 'th' )[5]).click();
-				};
-			</script>
-			<script>
-				if ('addEventListener' in window) {
-					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
-					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
-				}
-			</script>
+		<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+
+		<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+	  
+		<!-- Add Firebase products that you want to use -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebase/8.2.1/firebase-functions.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-remote-config.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-performance.js"></script>
+		  
+		<script src="/__/firebase/init.js?useEmulator=true"></script>
+		<script>
+			function populate(){	
+				var database = firebase.database();
+				database.ref('/users/').once('value', function(snapshot){
+					// console.log(snapshot.val());
+					if(snapshot.exists()){
+						var content = '';
+						snapshot.forEach(function(data){
+							var val = data.val();
+							content +='<tr>';
+							content += '<td>' + val.username + '</td>';
+							// content += '<td>' + val.games + '</td>';
+							// content += '<td>' + val.wins + '</td>';
+							// content += '<td>' + val.kpg + '</td>';
+							// content += '<td>' + val.ppg + '</td>';
+							// content += '<td>' + val.winpercent + '</td>';
+							content += '</tr>';
+						});
+					$('#ex-table').append(content);
+					}
+				});
+			}
+			window.onload = function() {
+				populate();
+
+				// Default sort by win %
+				(document.getElementsByTagName( 'th' )[5]).click();
+				(document.getElementsByTagName( 'th' )[5]).click();
+			};
+		</script>
+		<script>
+			if ('addEventListener' in window) {
+				window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+				document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+			}
+		</script>
 
 	</body>
 </html>
