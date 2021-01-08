@@ -58,7 +58,7 @@
 							  </table>
 							<ul>
 								<p></p>
-								<p><a href="new.html">Queue</a></p>
+								<p><a id="queue" >Queue</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 							</ul>							
 						</header>
@@ -104,13 +104,18 @@
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
 				
+				var queueBtn = document.getElementById("queue");
+				queueBtn.addEventListener('click', e => {
 				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:1});
+				});
 				
 				
 				
 				async function initApp(){	
 					
 					var gameId;
+					//var dataLoaded=false;
 				
 					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
 					
@@ -123,13 +128,16 @@
 								var value = childSnapshot.val();
 								console.log(value.id);
 								gameId=value.id;
+								
 								if (value.isActive){
-							
-									var gameRef = firebase.database().ref('games/' + gameId);
-									gameRef.on('value', (snapshot) => {
-										
-										updateScore(snapshot.val());
-									});
+										setGame(value);
+									
+									
+									
+									
+									
+									
+									
 								}
 								else{
 								
@@ -137,6 +145,10 @@
 								}
 							
 							});
+							
+							var gameRef = firebase.database().ref('games/' + sessionStorage.gameId);
+									gameRef.child("t1Score").on('value', (snapshot) => {updateT1(snapshot.val());});
+									gameRef.child("t2Score").on('value', (snapshot) => {updateT2(snapshot.val());});
 						}
 					});
 				
@@ -161,39 +173,64 @@
 					initApp();
 				};
 				
-				async function updateScore(game){
+				function updateT1(score){
 					var t1Score = document.getElementById("team1");
+					t1Score.innerHTML = score;
+				}
+				
+				function updateT2(score){
 					var t2Score = document.getElementById("team2");
+					t2Score.innerHTML = score;
+				}
+				
+				async function setGame(game){
+					var t1Score = document.getElementById("team1");
+					t1Score.innerHTML = game.t1Score;
+					var t2Score = document.getElementById("team2");
+					t2Score.innerHTML = game.t2Score;
+					
+					
 					var p1 = document.getElementById("p1");
 					var p2 = document.getElementById("p2");
 					var p3 = document.getElementById("p3");
 					var p4 = document.getElementById("p4");
 					
-					t1Score.innerHTML = game.t1Score;
-					t2Score.innerHTML = game.t2Score;
 					
-					if (!game.isActive){
-						//TODO 
-						// Load next game from queue or return to free table
 					
-					}
+					sessionStorage.p1=game.player1;
+					sessionStorage.p2=game.player2;
+					sessionStorage.p3=game.player3;
+					sessionStorage.p4=game.player4;
+					sessionStorage.gameId= game.id;
 					
-				
-				}
-				
-				async function setNames(game){
+					
 				
 					p1.innerHTML = await getUsername(game.player1);
 					p2.innerHTML = await getUsername(game.player2);
 					p3.innerHTML = await getUsername(game.player3);
 					p4.innerHTML = await getUsername(game.player4);
-				
+					
+					
+					
 				}
+				
+				
+				
+				
+				
 				
 				async function getUsername(uId){
 					
 					var snapshot = await firebase.database().ref('/users/' + uId).once('value');
 						return snapshot.val().username;
+					
+				
+				}
+				
+				async function getUId(uname){
+					
+					var snapshot = await firebase.database().ref('/names/' + uname).once('value');
+						return snapshot.val();
 					
 				
 				}
