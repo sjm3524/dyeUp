@@ -77,6 +77,11 @@
 		firebase.database().ref('users/' + uid).set({
 		username: uname,
 		email: email,
+		wins:0,
+		losses:0,
+		points: 0,
+		plunks:0,
+		gamesPlayed:0,
 		//profile_picture : imageUrl
 		});
 		
