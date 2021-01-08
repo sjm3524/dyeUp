@@ -27,11 +27,11 @@
 								</tr>
 								<tr>
 									
-										<td><img src="assets/css/images/default.png" class="game-icon" width="50px" alt="player1"></td>
+										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" width="50px" alt="player1"></td>
 										
 										<td rowspan="2" class="mid-elmnt-right" >III</td>
 										<td rowspan="2" class="mid-elmnt-left">IIII</td>
-										<td><img src="assets/css/images/default.png" class="game-icon" width="50px" alt="player1"></td>
+										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" width="50px" alt="player3"></td>
 										
 									
 									
@@ -45,10 +45,10 @@
 								
 								
 								<tr>
-										<td><img src="assets/css/images/default.png" class="game-icon" width="50px" alt="player1"></td>	
+										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" width="50px" alt="player2"></td>	
 										<td rowspan="2" class="mid-elmnt-right">III</td>
 										<td rowspan="2" class="mid-elmnt-left">II</td>
-										<td><img src="assets/css/images/default.png" class="game-icon" width="50px" alt="player1"></td>	
+										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" width="50px" alt="player4"></td>	
 								</tr>
 								<tr>
 									<td id="p2">Player 2</td>
@@ -104,11 +104,7 @@
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
 				
-				var queueBtn = document.getElementById("queue");
-				queueBtn.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:1});
-				});
 				
 				
 				
@@ -172,6 +168,7 @@
 				window.onload = function() {
 					initApp();
 				};
+				playerButtons();
 				
 				function updateT1(score){
 					var t1Score = document.getElementById("team1");
@@ -232,6 +229,63 @@
 					var snapshot = await firebase.database().ref('/names/' + uname).once('value');
 						return snapshot.val();
 					
+				
+				}
+				
+				function playerButtons(){
+				
+					var p1Btn = document.getElementById("p1Image");
+					p1Btn.addEventListener('click', e => {
+			
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:0});
+					});
+				
+					var p2Btn = document.getElementById("p2Image");
+					p2Btn.addEventListener('click', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:0});
+					});
+					
+					var p3Btn = document.getElementById("p3Image");
+					p3Btn.addEventListener('click', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:0});
+					});
+					
+					var p4Btn = document.getElementById("p4Image");
+					p4Btn.addEventListener('click', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:0});
+					});
+					
+					
+					//PLUNKS
+					/*
+					var p1Btn = document.getElementById("p1Image");
+					p1Btn.addEventListener('dblclick', e => {
+			
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:1});
+					});
+				
+					var p2Btn = document.getElementById("p2Image");
+					p2Btn.addEventListener('dblclick', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:1});
+					});
+					
+					var p3Btn = document.getElementById("p3Image");
+					p3Btn.addEventListener('dblclick', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:1});
+					});
+					
+					var p4Btn = document.getElementById("p4Image");
+					p4Btn.addEventListener('dblclick', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:1});
+					});*/
+					
+				
 				
 				}
 				
