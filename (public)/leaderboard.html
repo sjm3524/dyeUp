@@ -82,13 +82,13 @@
 			function populate(){	
 				var database = firebase.database();
 				database.ref('/users/').once('value', function(snapshot){
-					// console.log(snapshot.val());
 					if(snapshot.exists()){
 						var content = '';
 						snapshot.forEach(function(data){
+							console.log(data.key);
 							var val = data.val();
 							content +='<tr>';
-							content += '<td>' + val.username + '</td>';
+							content += '<td><a href="profile.html#' + data.key + '">' + val.username + '</a></td>';
 							// content += '<td>' + val.games + '</td>';
 							// content += '<td>' + val.wins + '</td>';
 							// content += '<td>' + val.kpg + '</td>';

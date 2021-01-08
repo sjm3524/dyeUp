@@ -11,6 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/open.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	</head>
 	<body class="is-preload">
 
@@ -20,11 +21,11 @@
 				<!-- Main -->
 					<section id="main">
 						<header>
-							<table style="width:100%; border: none;">
+							<table id="profile-table" style="width:100%; border: none;">
 								<tr>
 									<td colspan="2"><img src="assets/css/images/default.png" style="display:block; width:50px; margin-left: auto; margin-right: auto;" alt="player1"></td>
 								</tr>
-								<tr style="margin-top: 0px;">
+								<tr id="profile-pic" style="margin-top: 0px;">
 									<td colspan="2" style="font-size: 75%; letter-spacing: -.5px;">Change Picture</td>
 								</tr>
 									<td id="stat">Name:</td>
@@ -89,6 +90,79 @@
 			</div>
 
 		<!-- Scripts -->
+			<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+
+			<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+		
+			<!-- Add Firebase products that you want to use -->
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-remote-config.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-performance.js"></script>
+			
+			<script src="/__/firebase/init.js?useEmulator=true"></script>
+			<script>
+				var userID = window.location.hash.substring(1)
+				console.log("passed userID: " + userID);
+				var loginStatus = false;
+
+				function fillProfile() {	
+					var database = firebase.database();
+					database.ref('/users/' + userID).once('value', function(snapshot){
+						if(snapshot.exists()){
+							var content = '';
+								var val = snapshot.val();
+								content += '<tr><td id="stat">Name:</td>' + '<td id="data">' + val.username + '</td></tr>';
+								content += '<tr><td id="stat">Points:</td>' + '<td id="data">' + val.points + '</td></tr>';
+								content += '<tr><td id="stat">Plunks:</td>' + '<td id="data">' + val.plunks + '</td></tr>';
+						}
+						else {
+							// return alert("User data not found");
+						}
+						$('#profile-table').append(content);
+					});
+				}
+				
+				async function checkMyProfile() {
+					// check if user is logged in
+					firebase.auth().onAuthStateChanged(firebaseUser => {
+						if(firebaseUser){
+							// get UID
+							var user = firebase.auth().currentUser.uid;
+							console.log("logged in UID is: " + user);
+							loginStatus = true;
+						}
+						else{
+							console.log("No logged in user");
+							//window.location.replace("https://dyeup-34223.web.app/index.html")
+						}
+					});					  
+				}
+
+				// if passed UID does not match that of logged in user then remove the change picture option
+
+
+				window.onload = function() {
+					checkMyProfile();
+					fillProfile();
+
+					if (loginStatus == true) {
+						// show my profile pic (do nothing)
+					}
+					else {
+						// hide the button
+						document.getElementById("profile-pic").style.visibility="hidden";
+					}
+				};
+			
+			</script>
 			<script>
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
