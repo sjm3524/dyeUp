@@ -65,8 +65,8 @@
 	
 	btnLogIn.addEventListener('click', e => {
 	
-		const email = document.getElementById("email").value;
-		const pass = document.getElementById("pass").value;
+		const email = document.getElementById("email").value.trim();
+		const pass = document.getElementById("pass").value.trim();
 		const auth = firebase.auth();
 		
 		const promise = auth.signInWithEmailAndPassword(email,pass);

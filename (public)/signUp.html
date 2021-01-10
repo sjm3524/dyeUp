@@ -61,15 +61,30 @@
 	const btnSignUp = document.getElementById("btnSignUp");
 	
 	
-	btnSignUp.addEventListener('click', e => {
-	
-		const email = document.getElementById("email").value;
-		const pass = document.getElementById("pass").value;
-		const uname = document.getElementById("uname").value;
+	btnSignUp.addEventListener('click', async e => {
+		
+		const email = document.getElementById("email").value.trim();
+		const pass = document.getElementById("pass").value.trim();
+		const uname = document.getElementById("uname").value.trim();
 		const auth = firebase.auth();
 		
+		if(uname.includes(" ")){
+			return alert("Username cannot contain spaces");
+		}
 		
+		
+		var usernameInUse =  await checkUsername(uname);
+		console.log(usernameInUse);
+		if(usernameInUse == true){
+			console.log("exiting");
+			return false;
+		}
+		if(email.includes(" ")){
+			return alert("Please enter a valid email");
+		}
 		const promise = auth.createUserWithEmailAndPassword(email,pass);
+		
+		
 		promise.then(user => {
 		
 		var uid = user.user.uid;
@@ -105,6 +120,24 @@
 			}
 		  
 		  });
+	}
+	
+	async function checkUsername(uname){
+	var isUsernameTaken =false;
+		await firebase.database().ref('names/' + uname).once('value', snapshot =>{
+			console.log(uname);
+			if (snapshot.exists()){
+				console.log(snapshot.val());
+				alert("The username is already taken");
+				isUsernameTaken=true;
+			}
+			else{
+				console.log("username does not exist");
+				isUsernameTaken=false;
+			}
+		});
+		
+		return isUsernameTaken;
 	}
 	
 
