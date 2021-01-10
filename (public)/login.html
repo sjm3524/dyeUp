@@ -65,8 +65,8 @@
 	
 	btnLogIn.addEventListener('click', e => {
 	
-		const email = document.getElementById("email").value.trim();
-		const pass = document.getElementById("pass").value.trim();
+		const email = document.getElementById("email").value.trim().toLowerCase();
+		const pass = document.getElementById("pass").value.trim().toLowerCase();
 		const auth = firebase.auth();
 		
 		const promise = auth.signInWithEmailAndPassword(email,pass);
@@ -83,7 +83,7 @@
 	function initApp(){	
 		firebase.auth().onAuthStateChanged(firebaseUser => {
 			if(firebaseUser){
-			window.location.replace("https://dyeup-34223.web.app/open.html")
+			window.location.replace("https://dyeup-34223.web.app/game.html");
 			}
 			else{
 				console.log("not logged in");

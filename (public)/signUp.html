@@ -63,9 +63,9 @@
 	
 	btnSignUp.addEventListener('click', async e => {
 		
-		const email = document.getElementById("email").value.trim();
-		const pass = document.getElementById("pass").value.trim();
-		const uname = document.getElementById("uname").value.trim();
+		const email = document.getElementById("email").value.trim().toLowerCase();
+		const pass = document.getElementById("pass").value.trim().toLowerCase();
+		const uname = document.getElementById("uname").value.trim().toLowerCase();
 		const auth = firebase.auth();
 		
 		if(uname.includes(" ")){

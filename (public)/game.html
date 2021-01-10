@@ -58,7 +58,7 @@
 							  </table>
 							<ul>
 								<p></p>
-								<p><a id="queue" >Queue</a></p>
+								<p><a href="queue.html" id="queue" >Queue</a></p>
 								<p><a id = "endGame">End Game</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 							</ul>							
@@ -117,7 +117,8 @@
 					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
 					
 						if (snapshot.val() == null){
-							return alert("No game exists");
+							window.location.replace("https://dyeup-34223.web.app/open.html");
+							
 						}
 						else{
 							var games = snapshot.forEach(function (childSnapshot) {
@@ -138,7 +139,7 @@
 								}
 								else{
 								
-									return alert("No game exists");
+									window.location.replace("https://dyeup-34223.web.app/open.html");
 								}
 							
 							});
@@ -384,7 +385,7 @@
 					var gameId= gameRef.key;
 					firebase.database().ref('games/'+gameId).update({id:gameId});
 					
-					var setGameVar = await firebase.database().ref('/games/'+gameId).once('value')
+					var setGameVar = await firebase.database().ref('/games/'+gameId).once('value');
 					
 					setGame(setGameVar.val());	
 						
