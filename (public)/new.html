@@ -158,6 +158,8 @@
 							return alert("The user " + playersName[i] +" does not exist");
 						}
 						else{
+							console.log(playersName[i]);
+							console.log(snapshot.val().uid);
 							playersId.push(snapshot.val().uid);
 						}
 					}

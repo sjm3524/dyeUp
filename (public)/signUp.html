@@ -85,7 +85,7 @@
 		//profile_picture : imageUrl
 		});
 		
-		firebase.database().ref('names/' + uname).set(uid);
+		firebase.database().ref('names/' + uname).set({uid: uid});
 		
 		
 		

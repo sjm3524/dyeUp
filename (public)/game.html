@@ -319,6 +319,35 @@
 					});
 					
 					
+					var p1Plunk = document.getElementById("p1");
+					var p2Plunk = document.getElementById("p2");
+					var p3Plunk = document.getElementById("p3");
+					var p4Plunk = document.getElementById("p4");
+					
+					
+					p1Plunk.addEventListener('click', e => {
+			
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:1});
+					});
+				
+					
+					p2Plunk.addEventListener('click', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:1});
+					});
+					
+					
+					p3Plunk.addEventListener('click', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:1});
+					});
+					
+				
+					p4Plunk.addEventListener('click', e => {
+				
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:1});
+					});
+					
 					//PLUNKS
 					/*
 					var p1Btn = document.getElementById("p1Image");
