@@ -11,7 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/leaderboard.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 	</head>
 	<body class="is-preload">
@@ -89,14 +89,18 @@
 							var val = data.val();
 							content +='<tr>';
 							content += '<td><a href="profile.html#' + data.key + '">' + val.username + '</a></td>';
-							// content += '<td>' + val.games + '</td>';
-							// content += '<td>' + val.wins + '</td>';
-							// content += '<td>' + val.kpg + '</td>';
-							// content += '<td>' + val.ppg + '</td>';
-							// content += '<td>' + val.winpercent + '</td>';
+							 content += '<td>' + val.gamesPlayed + '</td>';
+							 content += '<td>' + val.wins + '</td>';
+							 content += '<td>' + (val.plunks/val.gamesPlayed).toFixed(2) + '</td>';
+							 content += '<td>' + (val.points/val.gamesPlayed).toFixed(2) + '</td>';
+							 content += '<td>' + ((val.wins/val.gamesPlayed)*100).toFixed(2)+"%" + '</td>';
 							content += '</tr>';
 						});
-					$('#ex-table').append(content);
+						
+						var table = document.getElementById("ex-table");
+						console.log(content);
+						$("#ex-table").append(content);
+						//table.append(content);
 					}
 				});
 			}

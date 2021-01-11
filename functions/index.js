@@ -40,6 +40,7 @@ exports.addPoint = functions.database.ref('games/{gameId}/points/{pointId}').onC
 						}
 						else{
 							admin.database().ref('users/' + point.id).update({plunks: admin.database.ServerValue.increment(1)});
+							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(1)});
 						}
 						
 						var game = await admin.database().ref('/games/' + context.params.gameId).once('value');
