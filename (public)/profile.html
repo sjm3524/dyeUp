@@ -27,11 +27,11 @@
 								</tr>
 								<tr id="profile-pic" style="margin-top: 0px;">
 									<td colspan="2" style="font-size: 75%; letter-spacing: -.5px;">
-										<input type="file" accept="image/*" capture="camera" id="cameraInput" name="uploadfile" style="display:none;"/>
-										<label for="cameraInput" id="profile-button">Change Picture</label>
+										<input class="button" type="file" accept="image/*" capture="environment" id="cameraInput" name="uploadfile" style="display:none;"/>
+										<label for="cameraInput" class="button">Change Picture</label>
 									</td>
 								</tr>
-									<td id="stat">Name:</td>
+								<!--	<td id="stat">Name:</td>
 									<td id="data">Josh Noble</td>
 								<tr>
 									<td id="stat">GP:</td>
@@ -73,6 +73,7 @@
 									<td id="stat">TTP:</td>
 									<td id="data">2:20:00</td>
 								</tr>
+								-->
 							  </table>
 							<ul>
 								<p></p>
@@ -133,18 +134,24 @@
 					});					  
 				}
 
-				function fillProfile() {
+				async function fillProfile() {
 					var database = firebase.database();
-					database.ref('/users/' + userID).once('value', function(snapshot){
+					 await database.ref('/users/' + userID).once('value', function(snapshot){
 						if(snapshot.exists()){
 							var content = '';
 								var val = snapshot.val();
 								// store path for profile picture
 								imgURL = val.profile_picture;
-								console.log("imgURL: " + imgURL);
+								console.log("fill profile imgURL: " + imgURL);
 								content += '<tr><td id="stat">Name:</td>' + '<td id="data">' + val.username + '</td></tr>';
+								content += '<tr><td id="stat">Games Played:</td>' + '<td id="data">' + val.gamesPlayed + '</td></tr>';
+								content += '<tr><td id="stat">Wins:</td>' + '<td id="data">' + val.wins + '</td></tr>';
+								content += '<tr><td id="stat">Losses:</td>' + '<td id="data">' + val.losses + '</td></tr>';
+								content += '<tr><td id="stat">Win %:</td>' + '<td id="data">'+ ((val.wins/val.gamesPlayed)*100).toFixed(2)+"%" + '</td></tr>';
 								content += '<tr><td id="stat">Points:</td>' + '<td id="data">' + val.points + '</td></tr>';
 								content += '<tr><td id="stat">Plunks:</td>' + '<td id="data">' + val.plunks + '</td></tr>';
+								content += '<tr><td id="stat">Points per game:</td>' + '<td id="data">' + (val.points/val.gamesPlayed).toFixed(2) + '</td></tr>';
+								content += '<tr><td id="stat">Plunks per game:</td>' + '<td id="data">' + (val.plunks/val.gamesPlayed).toFixed(2)+ '</td></tr>';
 						}
 						else {
 							// return alert("User data not found");
@@ -153,19 +160,22 @@
 					});
 				}
 
-				function displayProfilePic() {
+				async function displayProfilePic() {
 
-					console.log("imageURL is: " + imgURL);
-					if (imgURL = "default.png") {
+					console.log("display profile imageURL is: " + imgURL);
+					if (imgURL == "default.png") {
 						// display image from assets folder
 						var test = "assets/css/images/default.png";
 						document.querySelector('img').src = test;
+						
 					}
 					else {
 						// display uploaded image from storage
 						var storageRef = firebase.storage().ref('/users/' + userID + '/profilePicture/' + imgURL);
+						console.log(storageRef);
 						storageRef.getDownloadURL().then(function(url) {
 							var test = url;
+							console.log(test);
 							document.querySelector('img').src = test;
 						});
 					}
@@ -193,16 +203,16 @@
 						// console.log("profile pic url added");
 					});
 					// if profile pic is updated redisplay the new image
-					// displayProfilePic();
+					 displayProfilePic();
 				}
 
 
-				window.onload = function() {
+				window.onload = async function() {
 					checkMyProfile();
-					fillProfile();
+					await fillProfile();
 					displayProfilePic();
 					uploadPic();
-					console.log(imgURL);
+					console.log("onload "+imgURL);
 
 					if (loginStatus == true) {
 						// allow for profile pic to be edited
