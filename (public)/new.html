@@ -171,6 +171,10 @@
 					}
 					console.log(playersObj);
 					*/
+					firebase.database().ref('/users/' + playersId[0]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					firebase.database().ref('users/' + playersId[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					firebase.database().ref('/users/' + playersId[2]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 				
 					return gameRef = firebase.database().ref('games/').push({
 						player1: playersId[0],

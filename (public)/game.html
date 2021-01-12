@@ -230,12 +230,10 @@
 				async function endGame(){
 				
 					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
-					firebase.database().ref('/users/' + sessionStorage.p1).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('users/' + sessionStorage.p2).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('/users/' + sessionStorage.p3).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('users/' + sessionStorage.p4).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					
 					
 					var snapshot = await firebase.database().ref('/games/' + sessionStorage.gameId).once('value');
+					
 					
 						if (snapshot.val().t1Score > snapshot.val().t2Score){
 							firebase.database().ref('/users/' + sessionStorage.p1).update({wins: firebase.database.ServerValue.increment(1)});
@@ -243,11 +241,17 @@
 							firebase.database().ref('/users/' + sessionStorage.p3).update({losses: firebase.database.ServerValue.increment(1)});
 							firebase.database().ref('users/' + sessionStorage.p4).update({losses: firebase.database.ServerValue.increment(1)});
 						}
-						else{
+						else if(snapshot.val().t1Score < snapshot.val().t2Score){
 							firebase.database().ref('/users/' + sessionStorage.p3).update({wins: firebase.database.ServerValue.increment(1)});
 							firebase.database().ref('users/' + sessionStorage.p4).update({wins: firebase.database.ServerValue.increment(1)});
 							firebase.database().ref('/users/' + sessionStorage.p1).update({losses: firebase.database.ServerValue.increment(1)});
 							firebase.database().ref('users/' + sessionStorage.p2).update({losses: firebase.database.ServerValue.increment(1)});
+						}
+						else if(snapshot.val().t1Score == 0 && snapshot.val().t2Score == 0){
+							firebase.database().ref('/users/' + sessionStorage.p1).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
+							firebase.database().ref('users/' + sessionStorage.p2).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
+							firebase.database().ref('/users/' + sessionStorage.p3).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
+							firebase.database().ref('users/' + sessionStorage.p4).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
 						}
 
 						// check for teacup
