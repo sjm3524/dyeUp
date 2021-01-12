@@ -11,6 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/open.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.7.4/dist/progressbar.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	</head>
 	<body class="is-preload">
@@ -30,6 +31,17 @@
 										<input class="button" type="file" accept="image/*" capture="environment" id="cameraInput" name="uploadfile" style="display:none;"/>
 										<label for="cameraInput" class="button">Change Picture</label>
 									</td>
+								</tr>
+								<tr id="graph">
+								<td colspan="2">
+								<div id="totalSales">
+									<div class="col">
+									<div id="directSales" class="progressBar"></div>
+									<h3>Win %</h3>
+									
+									</div>
+								</div>
+								</td>
 								</tr>
 								<!--	<td id="stat">Name:</td>
 									<td id="data">Josh Noble</td>
@@ -135,6 +147,21 @@
 				}
 
 				async function fillProfile() {
+					var NetPromoterScore = new ProgressBar.Circle('#directSales', {
+						color: '#F7505A',
+						strokeWidth: 5,
+						trailWidth: 3,
+						duration: 1000,
+						text: {
+							value: '0%'
+						},
+						step: function(state, bar) {
+							bar.setText((bar.value() * 100).toFixed(2) + "%");
+						  }
+						});
+				
+				
+				
 					var database = firebase.database();
 					 await database.ref('/users/' + userID).once('value', function(snapshot){
 						if(snapshot.exists()){
@@ -142,16 +169,17 @@
 								var val = snapshot.val();
 								// store path for profile picture
 								imgURL = val.profile_picture;
+								NetPromoterScore.animate((val.wins/val.gamesPlayed).toFixed(4));
 								console.log("fill profile imgURL: " + imgURL);
 								content += '<tr><td id="stat">Name:</td>' + '<td id="data">' + val.username + '</td></tr>';
 								content += '<tr><td id="stat">Games Played:</td>' + '<td id="data">' + val.gamesPlayed + '</td></tr>';
 								content += '<tr><td id="stat">Wins:</td>' + '<td id="data">' + val.wins + '</td></tr>';
 								content += '<tr><td id="stat">Losses:</td>' + '<td id="data">' + val.losses + '</td></tr>';
-								content += '<tr><td id="stat">Win %:</td>' + '<td id="data">'+ ((val.wins/val.gamesPlayed)*100).toFixed(2)+"%" + '</td></tr>';
+								//content += '<tr><td id="stat">Win %:</td>' + '<td id="data">'+ (*100).toFixed(2)+"%" + '</td></tr>';
 								content += '<tr><td id="stat">Points:</td>' + '<td id="data">' + val.points + '</td></tr>';
 								content += '<tr><td id="stat">Plunks:</td>' + '<td id="data">' + val.plunks + '</td></tr>';
-								content += '<tr><td id="stat">Points per game:</td>' + '<td id="data">' + (val.points/val.gamesPlayed).toFixed(2) + '</td></tr>';
-								content += '<tr><td id="stat">Plunks per game:</td>' + '<td id="data">' + (val.plunks/val.gamesPlayed).toFixed(2)+ '</td></tr>';
+								content += '<tr><td id="stat">PPG:</td>' + '<td id="data">' + (val.points/val.gamesPlayed).toFixed(2) + '</td></tr>';
+								content += '<tr><td id="stat">KPG:</td>' + '<td id="data">' + (val.plunks/val.gamesPlayed).toFixed(2)+ '</td></tr>';
 						}
 						else {
 							// return alert("User data not found");
@@ -213,6 +241,11 @@
 					displayProfilePic();
 					uploadPic();
 					console.log("onload "+imgURL);
+					
+					
+					
+						
+					
 
 					if (loginStatus == true) {
 						// allow for profile pic to be edited
