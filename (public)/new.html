@@ -92,10 +92,10 @@
 				newGameBtn.addEventListener('click', e => {
 				
 					
-					const p1 = document.getElementById("player1").value;
-					const p2 = document.getElementById("player2").value;
-					const p3 = document.getElementById("player3").value;
-					const p4 = document.getElementById("player4").value;
+					const p1 = document.getElementById("player1").value.trim().toLowerCase();
+					const p2 = document.getElementById("player2").value.trim().toLowerCase();
+					const p3 = document.getElementById("player3").value.trim().toLowerCase();
+					const p4 = document.getElementById("player4").value.trim().toLowerCase();
 					
 					var playersName = new Array(p1,p2,p3,p4);
 					
