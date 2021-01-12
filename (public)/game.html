@@ -249,6 +249,16 @@
 							firebase.database().ref('/users/' + sessionStorage.p1).update({losses: firebase.database.ServerValue.increment(1)});
 							firebase.database().ref('users/' + sessionStorage.p2).update({losses: firebase.database.ServerValue.increment(1)});
 						}
+
+						// check for teacup
+						if ((snapshot.val().t1Score == 7 && snapshot.val().t2Score == 0)){
+							firebase.database().ref('/users/' + sessionStorage.p3).update({teacups: firebase.database.ServerValue.increment(1)});
+							firebase.database().ref('/users/' + sessionStorage.p4).update({teacups: firebase.database.ServerValue.increment(1)});
+						}
+						else if ((snapshot.val().t1Score == 0 && snapshot.val().t2Score == 7) {
+							firebase.database().ref('/users/' + sessionStorage.p2).update({teacups: firebase.database.ServerValue.increment(1)});
+							firebase.database().ref('/users/' + sessionStorage.p1).update({teacups: firebase.database.ServerValue.increment(1)});
+						}
 					
 					
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
