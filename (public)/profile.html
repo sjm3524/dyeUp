@@ -37,7 +37,7 @@
 								<div id="totalSales">
 									<div class="col">
 									<div id="directSales" class="progressBar"></div>
-									<h3>Win %</h3>
+									<h3 id="winPercent">Win Percent</h3>
 									
 									</div>
 								</div>
@@ -139,6 +139,9 @@
 							console.log("logged in UID is: " + user);
 							if(userID ==user){
 								loginStatus = true;
+							}
+							else{
+							console.log("different user");
 							}
 						}
 						else{
@@ -249,7 +252,7 @@
 					
 						
 					
-
+					console.log(loginStatus);
 					if (loginStatus == true) {
 						// allow for profile pic to be edited
 					}

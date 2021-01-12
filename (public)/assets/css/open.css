@@ -33,16 +33,21 @@
 		display: block;
 	}
 
+	#pic{
+		padding-left: 1.5em;
+	}
 	
-	
+	#winPercent{
+		padding-left: 1.5em;
+	}
 	#salesData {
 		margin-bottom: 60px;
 	}
 	#totalSales {
 	  height: 120px;
 	  position: relative;
-	  margin-top: 24px;
-	  margin-bottom: 50px;
+	 
+	  margin-bottom: 2em;
 	}
 	#totalSales .col {
 	 
