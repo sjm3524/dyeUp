@@ -134,11 +134,22 @@
 							playersId.push(snapshot.val().uid);
 						}
 					}
+					
+					
+					firebase.database().ref('/users/' + playersId[0]+"/games/").push(gameId);
+					firebase.database().ref('users/' + playersId[1]+"/games/").push(gameId);
+					firebase.database().ref('/users/' + playersId[2]+"/games/").push(gameId);
+					firebase.database().ref('users/' + playersId[3]+"/games/").push(gameId);
+					
 					var team1 = playersId.slice(0,2);
 					var team2= playersId.slice(2);
 					
 					team1.sort();
 					team2.sort();
+					
+					
+					
+					
 					
 					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).push(gameId);
 					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).push(gameId);
@@ -175,6 +186,8 @@
 					firebase.database().ref('users/' + playersId[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					firebase.database().ref('/users/' + playersId[2]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					
+					
 				
 					return gameRef = firebase.database().ref('games/').push({
 						player1: playersId[0],
