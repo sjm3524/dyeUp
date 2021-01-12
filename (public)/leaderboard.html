@@ -70,7 +70,7 @@
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
-		<script src="https://www.gstatic.com/firebase/8.2.1/firebase-functions.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
@@ -93,7 +93,7 @@
 							 content += '<td>' + val.wins + '</td>';
 							 content += '<td>' + (val.plunks/val.gamesPlayed).toFixed(2) + '</td>';
 							 content += '<td>' + (val.points/val.gamesPlayed).toFixed(2) + '</td>';
-							 content += '<td>' + ((val.wins/val.gamesPlayed)*100).toFixed(2)+"%" + '</td>';
+							 content += '<td>' + ((val.wins/val.gamesPlayed)*100).toFixed(2) + '</td>';
 							content += '</tr>';
 						});
 						
@@ -108,8 +108,8 @@
 				populate();
 
 				// Default sort by win %
-				(document.getElementsByTagName( 'th' )[5]).click();
-				(document.getElementsByTagName( 'th' )[5]).click();
+				//(document.getElementsByTagName( 'th' )[2]).click();
+				//(document.getElementsByTagName( 'th' )[2]).click();
 			};
 		</script>
 		<script>
