@@ -126,7 +126,7 @@
 					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
 					
 						if (snapshot.val() == null){
-							// window.location.replace("https://dyeup-34223.web.app/open.html");
+							window.location.replace("https://dyeup-34223.web.app/open.html");
 							
 						}
 						else{
@@ -148,7 +148,7 @@
 								}
 								else{
 								
-									// window.location.replace("https://dyeup-34223.web.app/open.html");
+									window.location.replace("https://dyeup-34223.web.app/open.html");
 								}
 							
 							});
@@ -166,7 +166,7 @@
 						
 						}
 						else{
-							// window.location.replace("https://dyeup-34223.web.app/index.html")
+							window.location.replace("https://dyeup-34223.web.app/index.html")
 						}
 					  
 					  });
