@@ -151,8 +151,8 @@
 					
 					
 					
-					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).push(gameId);
-					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).push(gameId);
+					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]+"/games/").push(gameId);
+					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]+"/games/").push(gameId);
 					
 					
 					window.location.replace("https://dyeup-34223.web.app/game.html");
