@@ -56,11 +56,20 @@
 									<td id="p4">Player 4</td>
 								</tr>
 							  </table>
+
+							<table id="queue-table" style="width: 100%; margin-top: 10px;">
+								<th colspan="2" id="queue-table-header">Next Up</th>
+								<tr>
+									<td class="queue-table-row" id="player-left"></td>
+									<td class="queue-table-row" id="player-right"></td>
+								</tr>
+							</table>
 							<ul>
 								<p></p>
 								<p><a href="queue.html" id="queue" >Queue</a></p>
 								<p><a id = "endGame">End Game</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">My Profile</a></p>
 							</ul>							
 						</header>
 
@@ -117,7 +126,7 @@
 					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
 					
 						if (snapshot.val() == null){
-							window.location.replace("https://dyeup-34223.web.app/open.html");
+							// window.location.replace("https://dyeup-34223.web.app/open.html");
 							
 						}
 						else{
@@ -139,7 +148,7 @@
 								}
 								else{
 								
-									window.location.replace("https://dyeup-34223.web.app/open.html");
+									// window.location.replace("https://dyeup-34223.web.app/open.html");
 								}
 							
 							});
@@ -157,7 +166,7 @@
 						
 						}
 						else{
-							window.location.replace("https://dyeup-34223.web.app/index.html")
+							// window.location.replace("https://dyeup-34223.web.app/index.html")
 						}
 					  
 					  });
@@ -167,8 +176,12 @@
 				
 				window.onload = function() {
 					initApp();
+					
+					
 				};
 				playerButtons();
+				fillQueueTable();
+				
 				
 				
 				var endGameBtn = document.getElementById("endGame");
@@ -224,6 +237,28 @@
 					
 				}
 				
+				async function fillQueueTable(){
+					document.getElementById("queue-table").style.visibility="hidden";
+					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
+						
+						var games = snapshot.forEach(function (childSnapshot) {
+
+							var value = childSnapshot.val();
+						
+							var playerLeft = value.left;
+							var playerRight = value.right;
+							console.log("player left is: " + playerLeft);
+							console.log("player right is: " + playerRight);
+							
+
+							var colLeft = document.getElementById("player-left");
+							var colRight = document.getElementById("player-right");
+							colLeft.innerHTML = playerLeft;
+							colRight.innerHTML = playerRight;
+						});
+						document.getElementById("queue-table").style.visibility="visible";
+					});
+				}
 				
 				
 				
@@ -281,10 +316,6 @@
 					
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
 					
-						
-						
-						
-						
 							var games = snapshot.forEach(function (childSnapshot) {
 
 								var value = childSnapshot.val();
@@ -304,6 +335,8 @@
 					
 				
 				}
+
+
 				
 				async function getUsername(uId){
 					
