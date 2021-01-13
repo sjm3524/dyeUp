@@ -186,9 +186,12 @@
 				
 				var endGameBtn = document.getElementById("endGame");
 				endGameBtn.addEventListener('click', e => {
-					
-					endGame();
-					
+					if (confirm('End game?')) {
+						endGame();
+					}
+					else {
+						// do nothing
+					}
 					
 				});
 				
