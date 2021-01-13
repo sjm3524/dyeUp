@@ -461,8 +461,13 @@
 					team1.sort();
 					team2.sort();
 					
-					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).push(gameId);
-					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).push(gameId);
+					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]+"/games/").push(gameId);
+					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]+"/games/").push(gameId);
+					
+					firebase.database().ref('/users/' + sessionStorage.p1+"/games/").push(gameId);
+					firebase.database().ref('users/' + sessionStorage.p2+"/games/").push(gameId);
+					firebase.database().ref('/users/' + sessionStorage.p3+"/games/").push(gameId);
+					firebase.database().ref('users/' + sessionStorage.p4+"/games/").push(gameId);
 					
 					
 				
@@ -479,8 +484,8 @@
 						var snapshot = await firebase.database().ref('/games/' + sessionStorage.gameId).once('value');
 						if (snapshot.val().t1Score > snapshot.val().t2Score){
 							playersId = [sessionStorage.p1, sessionStorage.p2, player2, player1]
-							sessionStorage.p3 = player1;
-							sessionStorage.p4 = player2;
+							sessionStorage.p3 = player2;
+							sessionStorage.p4 = player1;
 						}
 						else{
 							playersId = [player1, player2, sessionStorage.p3, sessionStorage.p4]
@@ -490,7 +495,10 @@
 					
 					 console.log(playersId);
 						
-					
+					firebase.database().ref('/users/' + sessionStorage.p1).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					firebase.database().ref('users/' + sessionStorage.p2).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					firebase.database().ref('/users/' + sessionStorage.p3).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					firebase.database().ref('users/' + sessionStorage.p4).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 				
 					return gameRef = firebase.database().ref('games/').push({
 						player1: sessionStorage.p1,
