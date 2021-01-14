@@ -23,55 +23,11 @@
 							<h1>Free Table</h1>
 							<ul>
 								<p><a href="new.html">New Game</a></p>
+								<p style="margin-top: -20px;" id="my-profile"></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
-							</ul>
-							
-							<!-- <p>Senior Psychonautics Engineer</p> -->
+							</ul>							
 						</header>
-						<!--
-						<hr />
-						<h2>Extra Stuff!</h2>
-						<form method="post" action="#">
-							<div class="fields">
-								<div class="field">
-									<input type="text" name="name" id="name" placeholder="Name" />
-								</div>
-								<div class="field">
-									<input type="email" name="email" id="email" placeholder="Email" />
-								</div>
-								<div class="field">
-									<select name="department" id="department">
-										<option value="">Department</option>
-										<option value="sales">Sales</option>
-										<option value="tech">Tech Support</option>
-										<option value="null">/dev/null</option>
-									</select>
-								</div>
-								<div class="field">
-									<textarea name="message" id="message" placeholder="Message" rows="4"></textarea>
-								</div>
-								<div class="field">
-									<input type="checkbox" id="human" name="human" /><label for="human">I'm a human</label>
-								</div>
-								<div class="field">
-									<label>But are you a robot?</label>
-									<input type="radio" id="robot_yes" name="robot" /><label for="robot_yes">Yes</label>
-									<input type="radio" id="robot_no" name="robot" /><label for="robot_no">No</label>
-								</div>
-							</div>
-							<ul class="actions special">
-								<li><a href="#" class="button">Get Started</a></li>
-							</ul>
-						</form>
-						<hr />
-						-->
-						<!-- <footer>
-							<ul class="icons">
-								<li><a href="#" class="icon brands fa-twitter">Twitter</a></li>
-								<li><a href="#" class="icon brands fa-instagram">Instagram</a></li>
-								<li><a href="#" class="icon brands fa-facebook-f">Facebook</a></li>
-							</ul>
-						</footer> -->
+
 					</section>
 
 				<!-- Footer -->
@@ -84,6 +40,67 @@
 			</div>
 
 		<!-- Scripts -->
+		<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+
+		<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+	  
+		<!-- Add Firebase products that you want to use -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-remote-config.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-performance.js"></script>
+		  
+		<script src="/__/firebase/init.js?useEmulator=true"></script>
+			<script>
+				
+
+				async function checkActiveGame(){
+					// redirect to game.html if active game
+					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
+						
+						if (snapshot.val() == null){
+							// stay on open.html
+							
+						}
+						else {
+							window.location.replace("https://dyeup-34223.web.app/game.html");
+						}
+					});
+				}
+
+				function checkLoginStatus() {
+					// check if user is logged in
+					firebase.auth().onAuthStateChanged(firebaseUser => {
+						if(firebaseUser){
+							// get UID
+							var userID = firebase.auth().currentUser.uid;
+							// console.log("logged in UID is: " + userID);
+
+							// link My Profile button
+							document.getElementById('my-profile').innerHTML = '<a href="profile.html#' + userID + '">My Profile</a>';
+						}
+						else{
+							console.log("No logged in user");
+							window.location.replace("https://dyeup-34223.web.app/index.html")
+						}
+					});					  
+				}
+
+				
+				window.onload = async function() {
+					
+					checkLoginStatus();
+					checkActiveGame();	
+					
+				};
+			</script>
 			<script>
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
