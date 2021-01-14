@@ -244,20 +244,24 @@
 					document.getElementById("queue-table").style.visibility="hidden";
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
 						
-						var games = snapshot.forEach(function (childSnapshot) {
+						var games = snapshot.forEach(async function (childSnapshot) {
 
 							var value = childSnapshot.val();
 						
 							var playerLeft = value.left;
 							var playerRight = value.right;
-							console.log("player left is: " + playerLeft);
-							console.log("player right is: " + playerRight);
-							
+							//console.log("player left is: " + playerLeft);
+							//console.log("player right is: " + playerRight);
+							var userNames = await firebase.database().ref('/users/' + playerLeft).once('value');
+								var leftName =userNames.val().username;
+							var userNames = await firebase.database().ref('/users/' + playerRight).once('value');
+								var rightName =userNames.val().username;
+								
 
 							var colLeft = document.getElementById("player-left");
 							var colRight = document.getElementById("player-right");
-							colLeft.innerHTML = playerLeft;
-							colRight.innerHTML = playerRight;
+							colLeft.innerHTML = leftName;
+							colRight.innerHTML = rightName;
 						});
 						document.getElementById("queue-table").style.visibility="visible";
 					});
@@ -319,7 +323,7 @@
 					
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
 					
-							var games = snapshot.forEach(function (childSnapshot) {
+							var games = snapshot.forEach(async function (childSnapshot) {
 
 								var value = childSnapshot.val();
 								console.log(childSnapshot.key);
@@ -328,7 +332,9 @@
 								createTeams(value.left, value.right);
 								//console.log(gameRef);
 								
-								firebase.database().ref('/queue/'+childSnapshot.key).remove();
+								await firebase.database().ref('/queue/'+childSnapshot.key).remove();
+								
+								fillQueueTable();
 							});
 							
 							
