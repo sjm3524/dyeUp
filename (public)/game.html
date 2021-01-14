@@ -66,10 +66,10 @@
 							</table>
 							<ul>
 								<p></p>
-								<p><a href="queue.html" id="queue" >Queue</a></p>
-								<p><a id = "endGame">End Game</a></p>
+								<p><a id="endGame">End Game</a></p>
+								<p style="margin-top: -20px;"><a href="queue.html" id="queue" >Queue</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
-								<p style="margin-top: -20px;"><a href="leaderboard.html">My Profile</a></p>
+								<p style="margin-top: -20px;" id="my-profile"></p>
 							</ul>							
 						</header>
 
@@ -161,7 +161,12 @@
 				
 					firebase.auth().onAuthStateChanged(firebaseUser => {
 						if(firebaseUser){
-						
+							// get UID
+							var userID = firebase.auth().currentUser.uid;
+							// console.log("logged in UID is: " + userID);
+
+							// link My Profile button
+							document.getElementById('my-profile').innerHTML = '<a href="profile.html#' + userID + '">My Profile</a>';
 							
 						
 						}
