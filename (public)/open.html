@@ -65,12 +65,24 @@
 					// redirect to game.html if active game
 					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
 						
-						if (snapshot.val() == null){
+						if (snapshot.val() == null) {
 							// stay on open.html
 							
 						}
-						else {
-							window.location.replace("https://dyeup-34223.web.app/game.html");
+						else{
+							var games = snapshot.forEach(function (childSnapshot) {
+								var value = childSnapshot.val();
+								console.log(value.id);
+								gameId=value.id;
+								
+								if (value.isActive) {
+									window.location.replace("https://dyeup-34223.web.app/game.html");
+								}
+								else {
+									// stay on open.html
+									// window.location.replace("https://dyeup-34223.web.app/open.html");
+								}
+							});
 						}
 					});
 				}
