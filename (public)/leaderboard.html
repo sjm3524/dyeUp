@@ -87,6 +87,7 @@
 						snapshot.forEach(function(data){
 							console.log(data.key);
 							var val = data.val();
+							if (val.gamesPlayed > 0){
 							content +='<tr>';
 							content += '<td style="letter-spacing: -.5px;"><a href="profile.html#' + data.key + '">' + val.username + '</a></td>';
 							 content += '<td>' + val.gamesPlayed + '</td>';
@@ -95,6 +96,7 @@
 							 content += '<td>' + (val.points/val.gamesPlayed).toFixed(2) + '</td>';
 							 content += '<td>' + ((val.wins/val.gamesPlayed)*100).toFixed(2) + "%"+'</td>';
 							content += '</tr>';
+							}
 						});
 						
 						var table = document.getElementById("ex-table");
