@@ -1194,8 +1194,9 @@
 		border-right: 1px solid black;
 		border-bottom: 1px solid black;
 	}
-	.queue-table-row {
+	.queue-table-cell {
 		border-left: 1px solid black;
 		border-right: 1px solid black;
 		border-bottom: 1px solid black;
+		border-top: 1px solid black;
 	}
