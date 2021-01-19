@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<!--
+	Identity by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>dyeUp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/open.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.7.4/dist/progressbar.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main">
+						<header>
+							<table id="profile-table" style="width:100%; border: none;">
+								<tr>
+									<td colspan="2" id="pic"><img style="display:block; width:50px; margin-left: auto; margin-right: auto; border-radius: 50%;" alt="player"></td>
+								</tr>
+								<tr id="profile-pic" style="margin-top: 0px;">
+									<td colspan="2" style="font-size: 75%; letter-spacing: -.5px;">
+										<input class="button" type="file" accept="image/*" capture="environment" id="cameraInput" name="uploadfile" style="display:none;"/>
+										<label for="cameraInput" class="button">Change Picture</label>
+									</td>
+								</tr>
+								<tr id="graph">
+								<td colspan="2">
+								<div id="totalSales">
+									<div class="col">
+									<div id="directSales" class="progressBar"></div>
+									<h3 id="winPercent">Win Percent</h3>
+									
+									</div>
+								</div>
+								</td>
+								</tr>
+								<!--	<td id="stat">Name:</td>
+									<td id="data">Josh Noble</td>
+								<tr>
+									<td id="stat">GP:</td>
+									<td id="data">4</td>
+								</tr>
+								<tr>
+									<td id="stat">Points:</td>
+									<td id="data">20</td>
+								</tr>
+								<tr>
+									<td id="stat">PPG:</td>
+									<td id="data">4.5</td>
+								</tr>
+								<tr>
+									<td id="stat">PPG:</td>
+									<td id="data">4.5</td>
+								</tr>
+								<tr>
+									<td id="stat">KPG:</td>
+									<td id="data">1.5</td>
+								</tr>
+								<tr>
+									<td id="stat">Wins:</td>
+									<td id="data">3</td>
+								</tr>
+								<tr>
+									<td id="stat">Losses:</td>
+									<td id="data">3</td>
+								</tr>
+								<tr>
+									<td id="stat">Win %:</td>
+									<td id="data">.500</td>
+								</tr>
+								<tr>
+									<td id="stat">AGT:</td>
+									<td id="data">35:00</td>
+								</tr>
+								<tr>
+									<td id="stat">TTP:</td>
+									<td id="data">2:20:00</td>
+								</tr>
+								-->
+							  </table>
+							<ul>
+								<p></p>
+								<p><a href="new.html">Queue</a></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+							</ul>							
+						</header>
+
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; STOBLE</li><li>OUTHOUSE INC</li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+
+			<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+		
+			<!-- Add Firebase products that you want to use -->
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-remote-config.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-performance.js"></script>
+			
+			<script src="/__/firebase/init.js?useEmulator=true"></script>
+			<script>
+				var userID = window.location.hash.substring(1)
+				console.log("userID passed from leaderboard: " + userID);
+				var loginStatus = false;
+				var imgURL = '';
+
+				async function checkMyProfile() {
+					// check if user is logged in
+					firebase.auth().onAuthStateChanged(firebaseUser => {
+						if(firebaseUser){
+							// get UID
+							var user = firebase.auth().currentUser.uid;
+							console.log("logged in UID is: " + user);
+							if(userID ==user){
+								loginStatus = true;
+							}
+							else{
+							console.log("different user");
+							}
+						}
+						else{
+							console.log("No logged in user");
+							window.location.replace("https://dyeup-34223.web.app/index.html")
+						}
+					});					  
+				}
+
+				async function fillProfile() {
+					var NetPromoterScore = new ProgressBar.Circle('#directSales', {
+						color: '#F7505A',
+						strokeWidth: 5,
+						trailWidth: 3,
+						duration: 1000,
+						text: {
+							value: '0%'
+						},
+						step: function(state, bar) {
+							bar.setText((bar.value() * 100).toFixed(2) + "%");
+						  }
+						});
+				
+				
+				
+					var database = firebase.database();
+					 await database.ref('/teams/' + userID).once('value', function(snapshot){
+						if(snapshot.exists()){
+							var content = '';
+								var val = snapshot.val();
+								var wins = val.wins;
+								if(typeof wins == "undefined"){
+									wins =0;
+								}
+								console.log(wins);
+								var gamesPlayed = val.gamesPlayed;
+								// store path for profile picture
+								imgURL = val.profile_picture;
+								NetPromoterScore.animate((wins/gamesPlayed).toFixed(4));
+								console.log("fill profile imgURL: " + imgURL);
+								//content += '<tr><td id="stat">Name:</td>' + '<td id="data">' + val.username + '</td></tr>';
+								content += '<tr><td id="stat">Games Played:</td>' + '<td id="data">' + gamesPlayed + '</td></tr>';
+								content += '<tr><td id="stat">Wins:</td>' + '<td id="data">' + wins + '</td></tr>';
+								content += '<tr><td id="stat">Losses:</td>' + '<td id="data">' + gamesPlayed-wins + '</td></tr>';
+								//content += '<tr><td id="stat">Win %:</td>' + '<td id="data">'+ (*100).toFixed(2)+"%" + '</td></tr>';
+								//content += '<tr><td id="stat">Points:</td>' + '<td id="data">' + val.points + '</td></tr>';
+								//content += '<tr><td id="stat">Plunks:</td>' + '<td id="data">' + val.plunks + '</td></tr>';
+								//content += '<tr><td id="stat">PPG:</td>' + '<td id="data">' + (val.points/val.gamesPlayed).toFixed(2) + '</td></tr>';
+								//content += '<tr><td id="stat">KPG:</td>' + '<td id="data">' + (val.plunks/val.gamesPlayed).toFixed(2)+ '</td></tr>';
+								//content += '<tr><td id="stat">Teacups:</td>' + '<td id="data">' + val.teacups + '</td></tr>';
+						}
+						else {
+							// return alert("User data not found");
+						}
+						$('#profile-table').append(content);
+					});
+				}
+
+				async function displayProfilePic() {
+
+					console.log("display profile imageURL is: " + imgURL);
+					//if (imgURL == "default.png") {
+						// display image from assets folder
+						var test = "assets/css/images/default.png";
+						document.querySelector('img').src = test;
+						
+					//}
+					/*else {
+						// display uploaded image from storage
+						var storageRef = firebase.storage().ref('/users/' + userID + '/profilePicture/' + imgURL);
+						console.log(storageRef);
+						storageRef.getDownloadURL().then(function(url) {
+							var test = url;
+							console.log(test);
+							document.querySelector('img').src = test;
+						});
+					}
+					*/
+				}
+
+				async function uploadPic() {
+
+					// listener to detect when file is uploaded
+					var fileButton = document.getElementById('cameraInput');
+					fileButton.addEventListener('change', function(e){
+						// get file
+						var file = e.target.files[0];
+
+						// create storage ref under the userID and add the file
+						var storageRef = firebase.storage().ref('/users/' + userID + '/profilePicture/' + file.name);
+						storageRef.put(file);
+						console.log("file uploaded");
+						console.log(file);
+
+						// add image path to rtdb
+						var database = firebase.database();
+						firebase.database().ref('users/' + userID).update({
+									profile_picture : file.name
+						});
+						// console.log("profile pic url added");
+					});
+					// if profile pic is updated redisplay the new image
+					 displayProfilePic();
+				}
+
+
+				window.onload = async function() {
+					checkMyProfile();
+					await fillProfile();
+					displayProfilePic();
+					uploadPic();
+					console.log("onload "+imgURL);
+					
+					
+					
+						
+					
+					console.log(loginStatus);
+					if (loginStatus == true) {
+						// allow for profile pic to be edited
+					}
+					else {
+						// hide the 'change picture' button - commented out for testing
+						 document.getElementById("profile-pic").style.visibility="hidden";
+					}
+				};
+			
+			</script>
+			<script>
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+			</script>
+
+	</body>
+</html>
