@@ -67,6 +67,76 @@ exports.addPoint = functions.database.ref('games/{gameId}/points/{pointId}').onC
 		
 });
     
+	
+exports.endGame = functions.database.ref('games/{gameId}/isActive/').onUpdate( async (change, context) => {
+	
+			var isActive = change.after.val();
+			var oldIsActive = change.before.val();
+
+			
+				
+					
+					
+					//firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					//firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					console.log(isActive);
+					console.log(oldIsActive);
+					if(isActive == false && oldIsActive ==true){
+						var snapshot = await admin.database().ref('/games/' + context.params.gameId).once('value');
+						var p1 = snapshot.val().player1;
+						var p2 = snapshot.val().player2;
+						var p3 = snapshot.val().player3;
+						var p4 = snapshot.val().player4;
+						var team1 = [p1, p2];
+						var team2 = [p3, p4];
+						
+						team1.sort();
+						team2.sort();
+						
+						
+						admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: admin.database.ServerValue.increment(1)});
+						admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: admin.database.ServerValue.increment(1)});
+						
+						
+						if (snapshot.val().t1Score > snapshot.val().t2Score){
+							admin.database().ref('/users/' + p1).update({wins: admin.database.ServerValue.increment(1)});
+							admin.database().ref('users/' + p2).update({wins: admin.database.ServerValue.increment(1)});
+							admin.database().ref('/users/' + p3).update({losses: admin.database.ServerValue.increment(1)});
+							admin.database().ref('users/' + p4).update({losses: admin.database.ServerValue.increment(1)});
+							admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({wins: admin.database.ServerValue.increment(1)});
+						}
+						else if(snapshot.val().t1Score < snapshot.val().t2Score){
+							admin.database().ref('/users/' + p3).update({wins: admin.database.ServerValue.increment(1)});
+							admin.database().ref('users/' + p4).update({wins: admin.database.ServerValue.increment(1)});
+							admin.database().ref('/users/' + p1).update({losses: admin.database.ServerValue.increment(1)});
+							admin.database().ref('users/' + p2).update({losses: admin.database.ServerValue.increment(1)});
+							admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({wins: admin.database.ServerValue.increment(1)});
+						}
+						else if(snapshot.val().t1Score == 0 && snapshot.val().t2Score == 0){
+							admin.database().ref('/users/' + p1).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('users/' + p2).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('/users/' + p3).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('users/' + p4).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+						}
+
+						// check for teacup
+						if (snapshot.val().t1Score == 7 && snapshot.val().t2Score == 0){
+							admin.database().ref('/users/' + p3).update({teacups: admin.database.ServerValue.increment(1)});
+							admin.database().ref('/users/' + p4).update({teacups: admin.database.ServerValue.increment(1)});
+						}
+						else if (snapshot.val().t1Score == 0 && snapshot.val().t2Score == 7) {
+							admin.database().ref('/users/' + p2).update({teacups: admin.database.ServerValue.increment(1)});
+							admin.database().ref('/users/' + p1).update({teacups: admin.database.ServerValue.increment(1)});
+						}
+					}
+					
+					
+			
+		
+		
+});
 
 							
 		

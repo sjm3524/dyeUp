@@ -278,7 +278,7 @@
 				
 					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
 					
-					var team1 = [sessionStorage.p1, sessionStorage.p2];
+					/* var team1 = [sessionStorage.p1, sessionStorage.p2];
 					var team2 = [sessionStorage.p3, sessionStorage.p4];
 					
 					team1.sort();
@@ -323,10 +323,17 @@
 						else if (snapshot.val().t1Score == 0 && snapshot.val().t2Score == 7) {
 							firebase.database().ref('/users/' + sessionStorage.p2).update({teacups: firebase.database.ServerValue.increment(1)});
 							firebase.database().ref('/users/' + sessionStorage.p1).update({teacups: firebase.database.ServerValue.increment(1)});
-						}
+						} */
 					
 					
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
+						console.log(snapshot.val());
+						
+						
+						if(snapshot.val()==null){
+							window.location.replace("https://dyeup-34223.web.app/open.html");
+						
+						}
 					
 							var games = snapshot.forEach(async function (childSnapshot) {
 
