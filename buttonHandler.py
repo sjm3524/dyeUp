@@ -1,25 +1,69 @@
+import time
 import RPi.GPIO as GPIO
 from firebase import firebase
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+# GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+# GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+# GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-firebase = firebase.FirebaseApplication("https://dyeup-34223-default-rtdb.firebaseio.com/", None)
+# initialize the sdk
+cred = credentials.Certificate("/home/pi/Documents/dyeup-34223-firebase-adminsdk-i2doi-866cf1b0de.json")
+app = firebase_admin.initialize_app(cred, {'databaseURL' : 'https://dyeup-34223-default-rtdb.firebaseio.com/'})
 
-# global var 
-player, playerOne, playerTwo, playerThree, playerFour = ""
+fb = firebase.FirebaseApplication("https://dyeup-34223-default-rtdb.firebaseio.com/", None)
+ref = db.reference()
+
+def buttonSetup():
+    global playerOne, playerTwo, playerThree, playerFour
+    
+    # need to assign players
+    playerOne = 'tHD9bLCP8RdGBEjR6rrLuKJAAey2'
+    print("assigned player UIDs")
+    return
+    
+
+def incPoint():
+    user_ref = ref.child('users/' + player)
+    points = user_ref.child('points').get()    
+    points += 1
+    user_ref.update({"points": points})
+
+def incPlunk():
+    user_ref = ref.child('users/' + player)
+    points = user_ref.child('points').get()    
+    points += 1
+    user_ref.update({"points": points})
+
+    plunks = user_ref.child('plunks').get()    
+    plunks += 1
+    user_ref.update({"plunks": plunks})
+
+
+# def removePrevious():
+    # note: need to store previous point first (already done)
+
+# def doSomething():
+    # what functionality do we want here? end game? 
+
+# ==============================================================
 
 while True:
     # if new game, reconfigure buttons to the respecitve users
-        buttonSetup()
+    buttonSetup()
 
-
+    # for testing only, move in button loop later
+    player = playerOne
+    print(player)
 
     # if button1 pressed
+    if GPIO.input(10) == GPIO.HIGH:
         player = playerOne
+        print("button pushed, UID: ")
 
         # if pressed once
             # increment point
@@ -91,22 +135,4 @@ while True:
             # return error
 
 
-
-
-def buttonSetup():
-    playerOne = 'tHD9bLCP8RdGBEjR6rrLuKJAAey2'
-    # assign Player 2 UID
-    # assign Player 3 UID
-    # assign Player 4 UID
-
-# def incPoint():
-
-
-# def incPlunk():
-
-
-# def removePrevious():
-    # note: need to store previous point first
-
-# def doSomething():
-    # what functionality do we want here? end game? 
+print("exited while loop")
