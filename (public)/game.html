@@ -29,8 +29,8 @@
 									
 										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" width="50px" alt="player1"></td>
 										
-										<td rowspan="2" class="mid-elmnt-right" >III</td>
-										<td rowspan="2" class="mid-elmnt-left">IIII</td>
+										<td rowspan="2" id="p1Tally" class="mid-elmnt-right" ></td>
+										<td rowspan="2" id= "p3Tally" class="mid-elmnt-left"></td>
 										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" width="50px" alt="player3"></td>
 										
 									
@@ -46,8 +46,8 @@
 								
 								<tr>
 										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" width="50px" alt="player2"></td>	
-										<td rowspan="2" class="mid-elmnt-right">III</td>
-										<td rowspan="2" class="mid-elmnt-left">II</td>
+										<td rowspan="2" id= "p2Tally" class="mid-elmnt-right"></td>
+										<td rowspan="2" id= "p4Tally" class="mid-elmnt-left"></td>
 										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" width="50px" alt="player4"></td>	
 								</tr>
 								<tr>
@@ -242,6 +242,7 @@
 					var gameRef = firebase.database().ref('games/' + game.id);
 									gameRef.child("t1Score").on('value', (snapshot) => {updateT1(snapshot.val());});
 									gameRef.child("t2Score").on('value', (snapshot) => {updateT2(snapshot.val());});
+					increaseTally();
 					
 				}
 				
@@ -278,52 +279,7 @@
 				
 					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
 					
-					/* var team1 = [sessionStorage.p1, sessionStorage.p2];
-					var team2 = [sessionStorage.p3, sessionStorage.p4];
 					
-					team1.sort();
-					team2.sort();
-					
-					
-					firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					
-					
-					var snapshot = await firebase.database().ref('/games/' + sessionStorage.gameId).once('value');
-					
-					
-						if (snapshot.val().t1Score > snapshot.val().t2Score){
-							firebase.database().ref('/users/' + sessionStorage.p1).update({wins: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('users/' + sessionStorage.p2).update({wins: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('/users/' + sessionStorage.p3).update({losses: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('users/' + sessionStorage.p4).update({losses: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).update({wins: firebase.database.ServerValue.increment(1)});
-						}
-						else if(snapshot.val().t1Score < snapshot.val().t2Score){
-							firebase.database().ref('/users/' + sessionStorage.p3).update({wins: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('users/' + sessionStorage.p4).update({wins: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('/users/' + sessionStorage.p1).update({losses: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('users/' + sessionStorage.p2).update({losses: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).update({wins: firebase.database.ServerValue.increment(1)});
-						}
-						else if(snapshot.val().t1Score == 0 && snapshot.val().t2Score == 0){
-							firebase.database().ref('/users/' + sessionStorage.p1).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
-							firebase.database().ref('users/' + sessionStorage.p2).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
-							firebase.database().ref('/users/' + sessionStorage.p3).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
-							firebase.database().ref('users/' + sessionStorage.p4).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
-							firebase.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
-							firebase.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: firebase.database.ServerValue.increment(-1)});
-						}
-
-						// check for teacup
-						if (snapshot.val().t1Score == 7 && snapshot.val().t2Score == 0){
-							firebase.database().ref('/users/' + sessionStorage.p3).update({teacups: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('/users/' + sessionStorage.p4).update({teacups: firebase.database.ServerValue.increment(1)});
-						}
-						else if (snapshot.val().t1Score == 0 && snapshot.val().t2Score == 7) {
-							firebase.database().ref('/users/' + sessionStorage.p2).update({teacups: firebase.database.ServerValue.increment(1)});
-							firebase.database().ref('/users/' + sessionStorage.p1).update({teacups: firebase.database.ServerValue.increment(1)});
-						} */
 					
 					
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
@@ -373,6 +329,42 @@
 						return snapshot.val();
 					
 				
+				}
+				
+				function increaseTally(){
+				
+				
+					firebase.database().ref('/games/'+sessionStorage.gameId+"/points/").on('value', function(snapshot){
+						value = snapshot.val();
+						console.log(value);
+						
+						snapshot.forEach(async function (childSnapshot) {
+
+								var val = childSnapshot.val();
+								console.log(val.id);
+								if(val.id == sessionStorage.p1){
+									document.getElementById("p1Tally").innerHTML += "I";
+								}
+								if(val.id == sessionStorage.p2){
+									document.getElementById("p2Tally").innerHTML += "I";
+								}
+								if(val.id == sessionStorage.p3){
+									document.getElementById("p3Tally").innerHTML += "I";
+								}
+								if(val.id == sessionStorage.p4){
+									document.getElementById("p4Tally").innerHTML += "I";
+								}
+								
+								
+							});
+						
+							
+							
+						
+					});
+				
+				
+					
 				}
 				
 				function playerButtons(){
