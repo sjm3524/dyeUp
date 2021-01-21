@@ -332,13 +332,19 @@
 				}
 				
 				function increaseTally(){
-				
+					
+					
 				
 					firebase.database().ref('/games/'+sessionStorage.gameId+"/points/").on('value', function(snapshot){
+					
+					document.getElementById("p1Tally").innerHTML = "";
+					document.getElementById("p2Tally").innerHTML ="";
+					document.getElementById("p3Tally").innerHTML ="";
+					document.getElementById("p4Tally").innerHTML ="";
 						value = snapshot.val();
 						console.log(value);
 						
-						snapshot.forEach(async function (childSnapshot) {
+						snapshot.forEach(function (childSnapshot) {
 
 								var val = childSnapshot.val();
 								console.log(val.id);
