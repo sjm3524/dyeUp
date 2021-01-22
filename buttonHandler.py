@@ -1,12 +1,13 @@
 import time
-# import RPi.GPIO as GPIO
+import sys
+import RPi.GPIO as GPIO
 # from firebase import firebase
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 # GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 # GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 # GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -19,14 +20,32 @@ app = firebase_admin.initialize_app(cred, {'databaseURL' : 'https://dyeup-34223-
 # fb = firebase.FirebaseApplication("https://dyeup-34223-default-rtdb.firebaseio.com/", None)
 ref = db.reference()
 
+# define global variables
 player = None
 playerOne = None
 playerTwo = None
 playerThree = None
 playerFour = None
 gameID = None
+activeStatus = None
 
 def checkActive():
+    global activeStatus
+
+    # check if game is active
+    game_ref = ref.child('games/')
+    activeStatus = game_ref.child(gameID + '/isActive').get()
+    # print("activeStatus: {}".format(activeStatus))
+
+    if activeStatus == True:
+        print("game is active!")
+    else:
+        # clear buttons
+        print("game is NOT active!")
+        clearButtons()
+
+
+def getGameID():
     global gameID
 
     # get active gameID
@@ -35,22 +54,6 @@ def checkActive():
     for key in snapshot:
         gameID = key
         print("gameID: {}".format(gameID))
-    # print("snapshot: {}".format(snapshot))
-
-    # check if game is active
-    activeStatus = game_ref.child(gameID + '/isActive').get()
-    print("activeStatus: {}".format(activeStatus))
-
-    if activeStatus == True:
-        # assign players to buttons
-        print("game is active!")
-        buttonSetup()
-    else:
-        # clear buttons
-        print("game is NOT active!")
-        clearButtons()
-
-    return
 
 def buttonSetup():
     game_ref = ref.child('games/' + gameID)
@@ -61,7 +64,7 @@ def buttonSetup():
     playerTwo = game_ref.child('player2').get()
     playerThree = game_ref.child('player3').get()
     playerFour = game_ref.child('player4').get()
-    print("player1: ", playerOne, ", player2: ", playerTwo, ", player3: ", playerThree, ", player4: ", playerFour)
+    # print("player1: ", playerOne, ", player2: ", playerTwo, ", player3: ", playerThree, ", player4: ", playerFour)
 
 def clearButtons():
     global playerOne, playerTwo, playerThree, playerFour
@@ -110,44 +113,56 @@ def incPlunk():
 # ==============================================================
 
 while True:
-    # if game is active, assign users to buttons 
-    checkActive()
-
-    # test
-    player = playerOne
-    print("button1 pushed, playerOne - UID: {}".format(player))
-
-    incPoint()
-    print("added point player 1!")
-    break
 
     # if button1 pressed (playerOne)
-    # if GPIO.input(10) == GPIO.HIGH:
-    #     player = playerOne
-    #     print("button1 pushed, playerOne - UID: ", player)
+    if GPIO.input(10) == GPIO.HIGH:
 
-    #     pressCount = 1
-    #     pressStatus = high
-    #     buttonHold = true
-    #     for 5 seconds:
-    #         if GPIO.input(10) == GPIO.LOW:
-    #             pressStatus = low
-    #             buttonHold = false
-    #             delay
-    #         elif (GPIO.input(10) == GPIO.HIGH) && (pressStatus == low):
-    #             pressCount += 1
-    #             delay
-    #         else
-    #             delay
-        
-    #     if (buttonHold == true):
-    #         # end game
-    #     elif (pressCount == 1):
-    #         # incPoint()
-    #     elif (pressCount == 2):
-    #         # incPlunk()
-    #     elif (pressCoutn == 3):
-            # remove previous point/plunk
+        pressCount = 1
+        pressStatus = True
+        buttonHold = True
+
+        # 5 second loop to check for buttons presses/hold
+        t_end = time.time() + 5
+        while time.time() < t_end:
+            if GPIO.input(10) == GPIO.LOW:
+                pressStatus = False
+                buttonHold = False
+            if (GPIO.input(10) == GPIO.HIGH) and (pressStatus == False):
+                pressCount = 2
+
+        print("pressCount: {}".format(pressCount))
+        print("pressStatus: {}".format(pressStatus))
+        print("buttonHold: {}".format(buttonHold))
+        # get the gameID and check if game is active
+        getGameID()
+        checkActive()
+
+        if activeStatus == True:
+            buttonSetup()
+            player = playerOne
+            # print("button1 pushed, playerOne - UID: ", player)
+            
+            
+
+            
+
+            if (buttonHold == True):
+                print("button held for 5 seconds")
+                time.sleep(5)
+                # end game
+            elif (pressCount == 1):
+                incPoint()
+                print("button pressed once")
+            elif (pressCount == 2):
+                incPlunk()
+                print("button pressed twice")
+            elif (pressCount == 3):
+            #     # remove previous point/plunk
+                print("button pressed thrice")
+
+        # else:
+        #     # do nothing
+        #     break
 
 
 #-------------------------------------------------------------------------------
