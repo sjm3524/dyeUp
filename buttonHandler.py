@@ -44,7 +44,6 @@ def checkActive():
         print("game is NOT active!")
         clearButtons()
 
-
 def getGameID():
     global gameID
 
@@ -74,26 +73,23 @@ def clearButtons():
     playerFour = None
     print("No active game")
 
-
-
 def incPoint():
     global gameID
     new_point_ref = ref.child('games/' + gameID + '/points')
     new_point_ref.push({"id": player, "type": 0})
 
-    # update user stats (may not be necessary if function already in place)
+    # update user stats (not necessary bc function already in place)
     # user_ref = ref.child('users/' + player)
     # points = user_ref.child('points').get()    
     # points += 1
     # user_ref.update({"points": points})
-
 
 def incPlunk():
     global gameID
     new_point_ref = ref.child('games/' + gameID + '/points')
     new_point_ref.push({"id": player, "type": 1})
 
-    # update user stats (may not be necessary if function already in place)
+    # update user stats (not necessary bc function already in place)
     # user_ref = ref.child('users/' + player)
     # points = user_ref.child('points').get()    
     # points += 1
@@ -103,12 +99,58 @@ def incPlunk():
     # plunks += 1
     # user_ref.update({"plunks": plunks})
 
+def removePrevious():
+    global playerOne, playerTwo, playerThree, playerFour
+    global gameID
 
-# def removePrevious():
-    # note: need to store previous point first
+    # get last point ID
+    last_ID_ref = ref.child('games/' + gameID + '/points')
+    snapshot = last_ID_ref.order_by_key().limit_to_last(1).get() 
+    for key in snapshot:
+        lastPointID = key
+        print("lastPointID: {}".format(lastPointID))
 
-# def doSomething():
-    # what functionality do we want here? end game? 
+    # get score type and userID of scorer
+    last_point_ref = ref.child ('games/' + gameID + '/points/' + lastPointID)
+    scoreType = last_point_ref.child('type').get()
+    userID = last_point_ref.child('id').get()
+    print("scoreType: {}".format(scoreType))
+    print("userID: {}".format(userID))
+
+    # subtract point/plunk from user stats
+    if (scoreType == 0):
+        user_ref = ref.child('users/' + userID)
+        points = user_ref.child('points').get()    
+        points -= 1
+        user_ref.update({"points": points})
+
+    elif (scoreType == 1):
+        user_ref = ref.child('users/' + userID)
+        points = user_ref.child('points').get()    
+        points -= 1
+        user_ref.update({"points": points})
+
+        plunks = user_ref.child('plunks').get()    
+        plunks -= 1
+        user_ref.update({"plunks": plunks})
+
+    # subtract point from team score
+    if (userID == playerOne or userID == playerTwo):
+        # remove point t1score
+        t1score = ref.child('games/' + gameID + '/t1Score').get()
+        # print("t1score: {}".format(t1score))
+        t1score -= 1
+        ref.child('games/' + gameID).update({"t1Score": t1score})
+
+    elif (userID == playerThree or userID == playerFour):
+        # remove point t2score
+        t2score = ref.child('games/' + gameID + '/t2Score').get()
+        # print("t2score: {}".format(t2score))
+        t2score -= 1
+        ref.child('games/' + gameID).update({"t2Score": t2score})
+
+    # delete the point from the game 
+    last_point_ref.delete()
 
 # ==============================================================
 
@@ -140,100 +182,143 @@ while True:
         if activeStatus == True:
             buttonSetup()
             player = playerOne
-            # print("button1 pushed, playerOne - UID: ", player)
+            # print("button1 pushed, playerOne - UID: {}".format(player))
             
-            
-
-            
-
             if (buttonHold == True):
                 print("button held for 5 seconds")
-                time.sleep(5)
-                # end game
+                removePrevious()
+                time.sleep(5) # delay so another button press isn't recroded
             elif (pressCount == 1):
                 incPoint()
                 print("button pressed once")
             elif (pressCount == 2):
                 incPlunk()
                 print("button pressed twice")
-            elif (pressCount == 3):
-            #     # remove previous point/plunk
-                print("button pressed thrice")
+            # elif (pressCount == 3):
+            #     print("button pressed thrice")
 
-        # else:
-        #     # do nothing
-        #     break
+    # if button2 pressed (playerTwo)
+    # if GPIO.input(11) == GPIO.HIGH:
 
+    #     pressCount = 1
+    #     pressStatus = True
+    #     buttonHold = True
 
-#-------------------------------------------------------------------------------
-        # if pressed once
-            # increment point
-            # incPoint()
-        # else if pressed twice
-            # increment plunk and point
-            # incPlunk()
-        # else if pressed thrice
-            # remove previous point
-            # removePrevious()
-        # else if held for 5 seconds
-            # do something else
-            # doSomething()
-        # else
-            # return error
+    #     # 5 second loop to check for buttons presses/hold
+    #     t_end = time.time() + 5
+    #     while time.time() < t_end:
+    #         if GPIO.input(11) == GPIO.LOW:
+    #             pressStatus = False
+    #             buttonHold = False
+    #         if (GPIO.input(11) == GPIO.HIGH) and (pressStatus == False):
+    #             pressCount = 2
 
-    # else if button2 pressed
-        # player = playerTwo
+    #     print("pressCount: {}".format(pressCount))
+    #     print("pressStatus: {}".format(pressStatus))
+    #     print("buttonHold: {}".format(buttonHold))
+    #     # get the gameID and check if game is active
+    #     getGameID()
+    #     checkActive()
 
-        # if pressed once
-            # increment point
-            # incPoint()
-        # else if pressed twice
-            # increment plunk and point
-            # incPlunk()
-        # else if pressed thrice
-            # remove previous point
-            # removePrevious()
-        # else if held for 5 seconds
-            # do something else
-            # doSomething()
-        # else
-            # return error
+    #     if activeStatus == True:
+    #         buttonSetup()
+    #         player = playerTwo
+    #         # print("button2 pushed, playerTwo - UID: {}".format(player))
+            
+    #         if (buttonHold == True):
+    #             print("button held for 5 seconds")
+    #             removePrevious()
+    #             time.sleep(5) # delay so another button press isn't recroded
+    #         elif (pressCount == 1):
+    #             incPoint()
+    #             print("button pressed once")
+    #         elif (pressCount == 2):
+    #             incPlunk()
+    #             print("button pressed twice")
+    #         # elif (pressCount == 3):
+    #         #     print("button pressed thrice")
 
-    # else if button3 pressed
-        # player = playerThree
+    # # if button3 pressed (playerThree)
+    # if GPIO.input(12) == GPIO.HIGH:
 
-        # if pressed once
-            # increment point
-            # incPoint()
-        # else if pressed twice
-            # increment plunk and point
-            # incPlunk()
-        # else if pressed thrice
-            # remove previous point
-            # removePrevious()
-        # else if held for 5 seconds
-            # do something else
-            # doSomething()
-        # else
-            # return error
+    #     pressCount = 1
+    #     pressStatus = True
+    #     buttonHold = True
+
+    #     # 5 second loop to check for buttons presses/hold
+    #     t_end = time.time() + 5
+    #     while time.time() < t_end:
+    #         if GPIO.input(12) == GPIO.LOW:
+    #             pressStatus = False
+    #             buttonHold = False
+    #         if (GPIO.input(12) == GPIO.HIGH) and (pressStatus == False):
+    #             pressCount = 2
+
+    #     print("pressCount: {}".format(pressCount))
+    #     print("pressStatus: {}".format(pressStatus))
+    #     print("buttonHold: {}".format(buttonHold))
+    #     # get the gameID and check if game is active
+    #     getGameID()
+    #     checkActive()
+
+    #     if activeStatus == True:
+    #         buttonSetup()
+    #         player = playerThree
+    #         # print("button2 pushed, playerThree - UID: {}".format(player))
+            
+    #         if (buttonHold == True):
+    #             print("button held for 5 seconds")
+    #             removePrevious()
+    #             time.sleep(5) # delay so another button press isn't recroded
+    #         elif (pressCount == 1):
+    #             incPoint()
+    #             print("button pressed once")
+    #         elif (pressCount == 2):
+    #             incPlunk()
+    #             print("button pressed twice")
+    #         # elif (pressCount == 3):
+    #         #     print("button pressed thrice")
+
+    #     # if button2 pressed (playerOne)
     
-    # else if button4 pressed
-        # player = playerFour
+    # # if button4 pressed (playerFour)
+    # if GPIO.input(13) == GPIO.HIGH:
 
-        # if pressed once
-            # increment point
-            # incPoint()
-        # else if pressed twice
-            # increment plunk and point
-            # incPlunk()
-        # else if pressed thrice
-            # remove previous point
-            # removePrevious()
-        # else if held for 5 seconds
-            # do something else
-            # doSomething()
-        # else
-            # return error
+    #     pressCount = 1
+    #     pressStatus = True
+    #     buttonHold = True
 
+    #     # 5 second loop to check for buttons presses/hold
+    #     t_end = time.time() + 5
+    #     while time.time() < t_end:
+    #         if GPIO.input(13) == GPIO.LOW:
+    #             pressStatus = False
+    #             buttonHold = False
+    #         if (GPIO.input(13) == GPIO.HIGH) and (pressStatus == False):
+    #             pressCount = 2
 
+    #     print("pressCount: {}".format(pressCount))
+    #     print("pressStatus: {}".format(pressStatus))
+    #     print("buttonHold: {}".format(buttonHold))
+    #     # get the gameID and check if game is active
+    #     getGameID()
+    #     checkActive()
+
+    #     if activeStatus == True:
+    #         buttonSetup()
+    #         player = playerFour
+    #         # print("button2 pushed, playerFour - UID: {}".format(player))
+            
+    #         if (buttonHold == True):
+    #             print("button held for 5 seconds")
+    #             removePrevious()
+    #             time.sleep(5) # delay so another button press isn't recroded
+    #         elif (pressCount == 1):
+    #             incPoint()
+    #             print("button pressed once")
+    #         elif (pressCount == 2):
+    #             incPlunk()
+    #             print("button pressed twice")
+    #         # elif (pressCount == 3):
+    #         #     print("button pressed thrice")
 print("exited while loop")
