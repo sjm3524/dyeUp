@@ -242,6 +242,20 @@
 					var gameRef = firebase.database().ref('games/' + game.id);
 									gameRef.child("t1Score").on('value', (snapshot) => {updateT1(snapshot.val());});
 									gameRef.child("t2Score").on('value', (snapshot) => {updateT2(snapshot.val());});
+									
+									
+					var gameRef = firebase.database().ref('games/' + game.id+"/points");
+									gameRef.limitToLast(1).on('value', (snapshot) => {
+										snapshot.forEach(async function (childSnapshot) {
+											if (childSnapshot.val().type == 1){
+												var myAudio = new Audio("audio/plunk.mp3");
+												myAudio.play();
+											
+											}
+										});
+									});
+												
+									
 					increaseTally();
 					
 				}
