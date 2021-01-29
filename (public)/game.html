@@ -27,11 +27,11 @@
 								</tr>
 								<tr>
 									
-										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" width="50px" alt="player1"></td>
+										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player1"></td>
 										
 										<td rowspan="2" id="p1Tally" class="mid-elmnt-right" ></td>
 										<td rowspan="2" id= "p3Tally" class="mid-elmnt-left"></td>
-										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" width="50px" alt="player3"></td>
+										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player3"></td>
 										
 									
 									
@@ -45,10 +45,10 @@
 								
 								
 								<tr>
-										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" width="50px" alt="player2"></td>	
+										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" style ="border-radius: 50%;"  width="50px"  alt="player2"></td>	
 										<td rowspan="2" id= "p2Tally" class="mid-elmnt-right"></td>
 										<td rowspan="2" id= "p4Tally" class="mid-elmnt-left"></td>
-										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" width="50px" alt="player4"></td>	
+										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player4"></td>	
 								</tr>
 								<tr>
 									<td id="p2">Player 2</td>
@@ -123,7 +123,7 @@
 					var gameId;
 					//var dataLoaded=false;
 				
-					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
+					await firebase.database().ref('/games/').limitToLast(1).on('value', function(snapshot){
 					
 						if (snapshot.val() == null){
 							window.location.replace("https://dyeup-34223.web.app/open.html");
@@ -231,6 +231,67 @@
 					sessionStorage.p3=game.player3;
 					sessionStorage.p4=game.player4;
 					sessionStorage.gameId= game.id;
+					
+					var player1Ref = await firebase.database().ref('users/' + game.player1);
+					player1Ref.once('value', (snapshot) => {
+					value = snapshot.val();
+					console.log(snapshot.key);
+					if (value.profile_picture != "default.png") {
+						// display uploaded image from storage
+						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						console.log(storageRef);
+						storageRef.getDownloadURL().then(function(url) {
+							var test = url;
+							console.log(test);
+							document.getElementById('p1Image').src = test;
+						});
+					}
+					});
+					
+					var player4Ref = await firebase.database().ref('users/' + game.player4);
+					player4Ref.once('value', (snapshot) => {
+					value = snapshot.val();
+					if (value.profile_picture != "default.png") {
+						// display uploaded image from storage
+						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						console.log(storageRef);
+						storageRef.getDownloadURL().then(function(url) {
+							var test = url;
+							console.log(test);
+							document.getElementById('p4Image').src = test;
+						});
+					}
+					});
+					
+					var player2Ref = await firebase.database().ref('users/' + game.player2);
+					player2Ref.once('value', (snapshot) => {
+					value = snapshot.val();
+					if (value.profile_picture != "default.png") {
+						// display uploaded image from storage
+						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						console.log(storageRef);
+						storageRef.getDownloadURL().then(function(url) {
+							var test = url;
+							console.log(test);
+							document.getElementById('p2Image').src = test;
+						});
+					}
+					});
+					
+					var player3Ref = await firebase.database().ref('users/' + game.player3);
+					player3Ref.once('value', (snapshot) => {
+					value = snapshot.val();
+					if (value.profile_picture != "default.png") {
+						// display uploaded image from storage
+						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						console.log(storageRef);
+						storageRef.getDownloadURL().then(function(url) {
+							var test = url;
+							console.log(test);
+							document.getElementById('p3Image').src = test;
+						});
+					}
+					});
 					
 					
 				

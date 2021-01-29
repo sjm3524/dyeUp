@@ -84,10 +84,11 @@
 			async function createContent(teams){
 				var content = '';
 					teams.sort((a, b) => ((a.wins/a.gamesPlayed) < (b.wins/b.gamesPlayed)) ? 1 : -1);
-					teams=teams.slice(0,10);
+					//teams=teams.slice(0,10);
 					console.log(teams);
 					for(const element of teams){
 					
+					console.log(element.player1);
 					p1Uname = await getUsername(element.player1);
 					p2Uname = await getUsername(element.player2);
 			

@@ -1,0 +1,225 @@
+<!DOCTYPE HTML>
+<!--
+	Identity by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>dyeUp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/open.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main">
+						<header>
+							<table style="width:100%; ">
+								<tr>
+									<th colspan="2" class="score" id="team1" style = "font-size:300%;"></td>
+									<th colspan="2" class ="score" id="team2" style = "font-size:300%;"></td>
+								</tr>
+								<tr>
+									
+										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" width="50px" alt="player1"></td>
+										
+										<td rowspan="2" id="p1Tally" class="mid-elmnt-right" ></td>
+										<td rowspan="2" id= "p3Tally" class="mid-elmnt-left"></td>
+										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" width="50px" alt="player3"></td>
+										
+									
+									
+								</tr>
+								<tr>
+									<td id="p1">Player 1</td>
+									
+									<td id="p3">Player 3</td>
+								</tr>
+								
+								
+								
+								<tr>
+										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" width="50px" alt="player2"></td>	
+										<td rowspan="2" id= "p2Tally" class="mid-elmnt-right"></td>
+										<td rowspan="2" id= "p4Tally" class="mid-elmnt-left"></td>
+										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" width="50px" alt="player4"></td>	
+								</tr>
+								<tr>
+									<td id="p2">Player 2</td>
+									
+									<td id="p4">Player 4</td>
+								</tr>
+							  </table>
+
+							<table id="queue-table" style="width: 100%; margin-top: 10px;">
+								<th colspan="2" id="queue-table-header">Next Up</th>
+								<tr>
+									<td class="queue-table-cell" id="player-left"></td>
+									<td class="queue-table-cell" id="player-right"></td>
+								</tr>
+							</table>
+							<ul>
+								<p></p>
+								<p><a id="endGame">End Game</a></p>
+								<p style="margin-top: -20px;"><a href="queue.html" id="queue" >Queue</a></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+								<p style="margin-top: -20px;" id="my-profile"></p>
+							</ul>							
+						</header>
+
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; STOBLE</li><li>OUTHOUSE INC</li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+		
+		
+		<script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-performance.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+		
+		
+		
+		
+		
+			<script>
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+				
+				
+				
+				
+				
+				async function initApp(){	
+					
+					
+				
+				
+		
+				}
+				
+
+				
+				window.onload = function() {
+					initApp();
+					fillQueueTable();
+					
+				};
+				playerButtons();
+				
+				
+				
+				
+				var endGameBtn = document.getElementById("endGame");
+				endGameBtn.addEventListener('click', e => {
+					if (confirm('End game?')) {
+						endGame();
+					}
+					else {
+						// do nothing
+					}
+					
+				});
+				
+				
+				
+	
+				
+				function fillQueueTable(){
+					document.getElementById("queue-table").style.visibility="hidden";
+					await firebase.database().ref('/queue/').once('value', function(snapshot){
+						
+						var games = snapshot.forEach(function (childSnapshot) {
+
+							var value = childSnapshot.val();
+						
+							var playerLeft = value.left;
+							var playerRight = value.right;
+							//console.log("player left is: " + playerLeft);
+							//console.log("player right is: " + playerRight);
+							var userNames = await firebase.database().ref('/users/' + playerLeft).once('value');
+								var leftName =userNames.val().username;
+							var userNames = await firebase.database().ref('/users/' + playerRight).once('value');
+								var rightName =userNames.val().username;
+								
+
+							var colLeft = document.getElementById("player-left");
+							var colRight = document.getElementById("player-right");
+							content +='<tr>';
+							
+							 content += '<td>' + leftName + '</td>';
+							 content += '<td>' + rightName + '</td>';
+							
+							content += '</tr>';
+						});
+						document.getElementById("queue-table").style.visibility="visible";
+					});
+				}
+				
+				
+				
+				
+
+
+				
+				async function getUsername(uId){
+					
+					var snapshot = await firebase.database().ref('/users/' + uId).once('value');
+						return snapshot.val().username;
+					
+				
+				}
+				
+				async function getUId(uname){
+					
+					var snapshot = await firebase.database().ref('/names/' + uname).once('value');
+						return snapshot.val();
+					
+				
+				}
+				
+				
+				
+				
+				
+				
+					
+					
+				
+				
+				
+				
+				
+				
+			</script>
+
+	</body>
+</html>

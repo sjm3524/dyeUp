@@ -66,6 +66,42 @@ exports.addPoint = functions.database.ref('games/{gameId}/points/{pointId}').onC
 		
 		
 });
+
+exports.removePoint = functions.database.ref('games/{gameId}/points/{pointId}').onDelete( async (snapshot, context) => {
+	
+			var point = snapshot.val();
+
+			
+										
+	
+					
+					console.log(point);
+					
+					console.log("removing point")
+					if(point){
+						console.log(point.id);
+						if (point.type <1){
+							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
+						}
+						else{
+							admin.database().ref('users/' + point.id).update({plunks: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
+						}
+						
+						var game = await admin.database().ref('/games/' + context.params.gameId).once('value');
+							
+						
+						
+						if(point.id === game.val().player1 || point.id === game.val().player2){
+							admin.database().ref('games/' + context.params.gameId).update({t1Score: admin.database.ServerValue.increment(-1)});
+						}
+						else{
+							admin.database().ref('games/' + context.params.gameId).update({t2Score: admin.database.ServerValue.increment(-1)});
+						}
+					}
+					
+		
+});
     
 	
 exports.endGame = functions.database.ref('games/{gameId}/isActive/').onUpdate( async (change, context) => {

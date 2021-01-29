@@ -60,7 +60,7 @@
 		<script src="/__/firebase/init.js?useEmulator=true"></script>
 			<script>
 				
-				var playerID="Bl5mNCX2EINWqDeegnKzpbjydP23";
+				var playerID="fLq29lOarZWJXsRUSPyL0G8GAYO2";
 				var wins=0;
 				var losses=0;
 				var gamesPlayed=0;
@@ -77,6 +77,11 @@
 								var value = childSnapshot.val();
 								console.log(value.id);
 								gameId=value.id;
+								
+								if(value.t1Score == value.t2Score){
+									console.log("TIE ERROR");
+									console.log(gameId);
+								}
 								
 								if ((value.player1 == playerID || value.player2 == playerID)){
 									gamesPlayed=gamesPlayed+1;
