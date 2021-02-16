@@ -38,6 +38,40 @@
   display: block;
   width:100%; 
 }
+
+.points {
+
+  background-color: #5F9EA0;
+  border: none;
+  color: white;
+  padding: 1px;
+  margin-bottom: 2px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  box-shadow: 2px 2px grey;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: middle;
+}
+.pointsTop {
+	margin-top: 1.3em;
+  background-color: #5F9EA0;
+  border: none;
+  color: white;
+  padding:1px;
+  margin-bottom: 2px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  box-shadow: 2px 2px grey;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: middle;
+}
+
 	
 	.autocomplete-items {
   position: absolute;

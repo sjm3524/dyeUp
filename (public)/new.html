@@ -137,7 +137,7 @@
 					var gameRef = await createGame(playersName);
 					
 					var gameId= gameRef.key;
-					firebase.database().ref('games/'+gameId).update({id:gameId});
+					await firebase.database().ref('games/'+gameId).update({id:gameId});
 					console.log(gameId);
 					
 					var playersId =[]

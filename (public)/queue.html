@@ -136,13 +136,18 @@
 					}
 					console.log(playersObj);
 					*/
-				
-					firebase.database().ref('queue/').push({
-						left: p1Id,
-						right: p2Id,
-						
-					});
-					return alert(player1+" and " +player2 +" have been added to the queue");
+					if (confirm('add'+player1+' and '+player2+' to the queue?')) {
+						await firebase.database().ref('queue/').push({
+							left: p1Id,
+							right: p2Id,
+						});
+						window.location.replace("https://dyeup-34223.web.app/game.html");
+					}
+					else {
+						// do nothing
+					}
+					
+					
 					
 				
 				

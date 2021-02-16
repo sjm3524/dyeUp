@@ -22,40 +22,51 @@
 						<header>
 							<table style="width:100%; ">
 								<tr>
-									<th colspan="2" class="score" id="team1" style = "font-size:300%;"></td>
-									<th colspan="2" class ="score" id="team2" style = "font-size:300%;"></td>
+									<th colspan="3" class="score" id="team1" style = "font-size:300%;"></td>
+									<th colspan="3" class ="score" id="team2" style = "font-size:300%;"></td>
 								</tr>
 								<tr>
-									
+										<td id = "p1Point" class ="pointsTop">p+</td>
 										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player1"></td>
 										
 										<td rowspan="2" id="p1Tally" class="mid-elmnt-right" ></td>
 										<td rowspan="2" id= "p3Tally" class="mid-elmnt-left"></td>
 										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player3"></td>
-										
+										<td id = "p3Point" class ="pointsTop">p+</td>
 									
 									
 								</tr>
 								<tr>
-									<td id="p1">Player 1</td>
+									<td id = "p1Plunk" class ="points">k+</td>
+									<td colspan ="1" id="p1">Player 1</td>
 									
-									<td id="p3">Player 3</td>
+									<td colspan ="1" id="p3">Player 3</td>
+									<td id = "p3Plunk" class ="points">k+</td>
 								</tr>
 								
 								
 								
 								<tr>
+										<td id = "p2Point" class ="pointsTop">p+</td>
 										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" style ="border-radius: 50%;"  width="50px"  alt="player2"></td>	
 										<td rowspan="2" id= "p2Tally" class="mid-elmnt-right"></td>
 										<td rowspan="2" id= "p4Tally" class="mid-elmnt-left"></td>
 										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player4"></td>	
+										<td id = "p4Point" class ="pointsTop">p+</td>
 								</tr>
 								<tr>
-									<td id="p2">Player 2</td>
+									<td id = "p2Plunk" class ="points">k+</td>
+									<td colspan="1" id="p2">Player 2</td>
 									
-									<td id="p4">Player 4</td>
+									<td colspan="1"  id="p4">Player 4</td>
+									<td id = "p4Plunk" class ="points">k+</td>
 								</tr>
 							  </table>
+							  
+							  <ul>
+							  <p></p>
+							  <p style="margin-top: -20px;"><a id="remove" >Remove Last Point</a></p>
+							  </ul>
 
 							<table id="queue-table" style="width: 100%; margin-top: 10px;">
 								<th colspan="2" id="queue-table-header">Next Up</th>
@@ -67,7 +78,7 @@
 							<ul>
 								<p></p>
 								<p><a id="endGame">End Game</a></p>
-								<p style="margin-top: -20px;"><a href="queue.html" id="queue" >Queue</a></p>
+								<p style="margin-top: -20px;"><a href="fullqueue.html" id="queue" >Queue</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 								<p style="margin-top: -20px;" id="my-profile"></p>
 							</ul>							
@@ -133,8 +144,9 @@
 							var games = snapshot.forEach(function (childSnapshot) {
 
 								var value = childSnapshot.val();
-								console.log(value.id);
-								gameId=value.id;
+								console.log(childSnapshot.key);
+								console.log(value);
+								gameId=childSnapshot.key;
 								
 								if (value.isActive){
 										setGame(value);
@@ -171,7 +183,7 @@
 						
 						}
 						else{
-							window.location.replace("https://dyeup-34223.web.app/index.html")
+							window.location.replace("https://dyeup-34223.web.app/index.html");
 						}
 					  
 					  });
@@ -450,35 +462,35 @@
 				
 				function playerButtons(){
 					console.log(sessionStorage.gameId);
-					var p1Btn = document.getElementById("p1Image");
+					var p1Btn = document.getElementById("p1Point");
 					p1Btn.addEventListener('click', e => {
 			
 						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:0});
 					});
 				
-					var p2Btn = document.getElementById("p2Image");
+					var p2Btn = document.getElementById("p2Point");
 					p2Btn.addEventListener('click', e => {
 				
 						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:0});
 					});
 					
-					var p3Btn = document.getElementById("p3Image");
+					var p3Btn = document.getElementById("p3Point");
 					p3Btn.addEventListener('click', e => {
 				
 						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:0});
 					});
 					
-					var p4Btn = document.getElementById("p4Image");
+					var p4Btn = document.getElementById("p4Point");
 					p4Btn.addEventListener('click', e => {
 				
 						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:0});
 					});
 					
 					
-					var p1Plunk = document.getElementById("p1");
-					var p2Plunk = document.getElementById("p2");
-					var p3Plunk = document.getElementById("p3");
-					var p4Plunk = document.getElementById("p4");
+					var p1Plunk = document.getElementById("p1Plunk");
+					var p2Plunk = document.getElementById("p2Plunk");
+					var p3Plunk = document.getElementById("p3Plunk");
+					var p4Plunk = document.getElementById("p4Plunk");
 					
 					
 					p1Plunk.addEventListener('click', e => {
@@ -502,6 +514,55 @@
 					p4Plunk.addEventListener('click', e => {
 				
 						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:1});
+					});
+					
+					var p1Prof = document.getElementById("p1Image");
+					var p2Prof = document.getElementById("p1Image");
+					var p3Prof = document.getElementById("p1Image");
+					var p4Prof = document.getElementById("p1Image");
+					
+					p1Prof.addEventListener('click', e=> {
+						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p1);
+					});
+					p2Prof.addEventListener('click', e=> {
+						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p2);
+					});
+					p3Prof.addEventListener('click', e=> {
+						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p3);
+					});
+					p4Prof.addEventListener('click', e=> {
+						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p4);
+					});
+					
+					var removePoint = document.getElementById("remove");
+					
+					removePoint.addEventListener('click', e=> {
+						firebase.database().ref('games/'+sessionStorage.gameId+"/points").limitToLast(1).once('value', function(snapshot){
+						console.log(snapshot.val());
+						
+						
+							if(snapshot.val()==null){
+								
+							
+							}
+							else{
+						
+								var games = snapshot.forEach(function (childSnapshot) {
+
+									var value = childSnapshot.val();
+									console.log(childSnapshot.key);
+									
+					
+									
+									firebase.database().ref('games/'+sessionStorage.gameId+"/points/"+childSnapshot.key).remove();
+									
+									fillQueueTable();
+								});
+							}
+							
+							
+						
+						});
 					});
 					
 					//PLUNKS
@@ -538,10 +599,10 @@
 					var gameRef = await createGame(player1, player2);
 					
 					var gameId= gameRef.key;
-					firebase.database().ref('games/'+gameId).update({id:gameId});
+					await firebase.database().ref('games/'+gameId).update({id:gameId});
 					
 					var setGameVar = await firebase.database().ref('/games/'+gameId).once('value');
-					
+					console.log(setGameVar.key);
 					setGame(setGameVar.val());	
 						
 					
