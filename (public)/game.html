@@ -379,9 +379,9 @@
 				
 				async function endGame(){
 				
-<<<<<<< Updated upstream
+
 					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
-					
+					firebase.database().ref('tables/'+tableId).update({status: "open"});
 					// record endTime
 					var e = new Date();
 					var endTime = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
@@ -401,11 +401,7 @@
 					var elapTime = elapHour + ":" + elapMin + ":" + elapSec;
 
 					firebase.database().ref('games/' + sessionStorage.gameId).set({elapsed: elapTime});
-=======
-					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({isActive: false});
-					firebase.database().ref('tables/'+tableId).update({status: "open"});
-					
->>>>>>> Stashed changes
+
 					
 					
 					await firebase.database().ref('tables/'+tableId+'/queue/').limitToFirst(1).once('value', function(snapshot){
