@@ -152,7 +152,7 @@
 					await firebase.database().ref('tables/'+tableId+'/games/').limitToLast(1).on('value', function(snapshot){
 					
 						if (snapshot.val() == null){
-							window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
+							//window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 							
 						}
 						else{
@@ -175,7 +175,7 @@
 								}
 								else{
 								
-									window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
+									//window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 								}
 							
 							});
@@ -383,7 +383,7 @@
 					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({isActive: false});
 					firebase.database().ref('tables/'+tableId).update({status: "open"});
 					// record endTime
-					var e = new Date();
+					/*var e = new Date();
 					var endTime = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
 					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({end: endTime});
 
@@ -400,8 +400,8 @@
 					var elapSec = endSec - startSec;
 					var elapTime = elapHour + ":" + elapMin + ":" + elapSec;
 
-					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({elapsed: elapTime});
-
+					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({elapsed: elapTime});*/
+			
 					
 					
 					await firebase.database().ref('tables/'+tableId+'/queue/').limitToFirst(1).once('value', function(snapshot){
@@ -410,12 +410,12 @@
 						
 						if(snapshot.val()==null){
 						
-							window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
+							//window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 						
 						}
 					
 							var games = snapshot.forEach(async function (childSnapshot) {
-
+								console.log(childSnapshot.val());
 								var value = childSnapshot.val();
 								console.log(childSnapshot.key);
 								

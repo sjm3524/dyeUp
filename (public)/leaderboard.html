@@ -87,7 +87,7 @@
 						snapshot.forEach(function(data){
 							console.log(data.key);
 							var val = data.val();
-							if (val.gamesPlayed > 0){
+							if (val.gamesPlayed > 0 && !(val.username.includes("test"))){
 							content +='<tr>';
 							content += '<td style="letter-spacing: -.5px;"><a href="profile.html#' + data.key + '">' + val.username + '</a></td>';
 							 content += '<td>' + val.gamesPlayed + '</td>';
