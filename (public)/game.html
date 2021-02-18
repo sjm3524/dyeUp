@@ -366,7 +366,25 @@
 				
 					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
 					
-					
+					// record endTime
+					var e = new Date();
+					var endTime = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
+					firebase.database().ref('games/' + sessionStorage.gameId).set({end: endTime});
+
+					// parse times and find elapsedTime
+					var start = firebase.database().ref('games/' + sessionStorage.gameId + '/startTime').get();
+					var startHours = start.slice(0,2);
+					var endHours = endTime.slice(0,2);
+					var startMin = start.slice(3,5);
+					var endMin = endTime.slice(3,5);
+					var startSec = start.slice(4,6);
+					var endSec = endTime.slice(4,6);
+					var elapHour = endHours - startHours;
+					var elapMin = endMin - startMin;
+					var elapSec = endSec - startSec;
+					var elapTime = elapHour + ":" + elapMin + ":" + elapSec;
+
+					firebase.database().ref('games/' + sessionStorage.gameId).set({elapsed: elapTime});
 					
 					
 					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
@@ -654,6 +672,10 @@
 					firebase.database().ref('users/' + sessionStorage.p2).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					firebase.database().ref('/users/' + sessionStorage.p3).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					firebase.database().ref('users/' + sessionStorage.p4).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+
+					// record game start time
+					var d = new Date();
+					var startTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 				
 					return gameRef = firebase.database().ref('games/').push({
 						player1: sessionStorage.p1,
@@ -665,6 +687,7 @@
 						t2Score:0,
 						isActive: true,
 						id: null,
+						start: startTime
 					//profile_picture : imageUrl
 					});
 					
