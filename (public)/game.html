@@ -152,7 +152,7 @@
 					await firebase.database().ref('tables/'+tableId+'/games/').limitToLast(1).on('value', function(snapshot){
 					
 						if (snapshot.val() == null){
-							//window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
+							window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 							
 						}
 						else{
@@ -175,7 +175,7 @@
 								}
 								else{
 								
-									//window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
+									window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 								}
 							
 							});
@@ -410,7 +410,7 @@
 						
 						if(snapshot.val()==null){
 						
-							//window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
+							window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 						
 						}
 					
