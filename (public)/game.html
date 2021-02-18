@@ -385,7 +385,7 @@
 					// record endTime
 					var e = new Date();
 					var endTime = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
-					firebase.database().ref('games/' + sessionStorage.gameId).update({end: endTime});
+					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({end: endTime});
 
 					// parse times and find elapsedTime
 					var start = firebase.database().ref('tables/' +tableId+"/games/"+ sessionStorage.gameId + '/startTime').get();
@@ -400,7 +400,7 @@
 					var elapSec = endSec - startSec;
 					var elapTime = elapHour + ":" + elapMin + ":" + elapSec;
 
-					firebase.database().ref('games/' + sessionStorage.gameId).update({elapsed: elapTime});
+					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({elapsed: elapTime});
 
 					
 					
