@@ -78,7 +78,7 @@
 							<ul>
 								<p></p>
 								<p><a id="endGame">End Game</a></p>
-								<p style="margin-top: -20px;"><a href="fullqueue.html" id="queue" >Queue</a></p>
+								<p style="margin-top: -20px;"><a  id="queue" >Queue</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 								<p style="margin-top: -20px;" id="my-profile"></p>
 							</ul>							
@@ -128,16 +128,31 @@
 				
 				
 				
+				var tableId = window.location.hash.substring(1);
+				if (tableId ==""){
+					window.location.replace("https://dyeup-34223.web.app/tables.html");
+				}
+				
+				
+				var queueBtn = document.getElementById("queue");
+				
+				queueBtn.addEventListener('click', e => {
+					
+					window.location.href="https://dyeup-34223.web.app/fullqueue.html#"+tableId;
+					
+				});
+				
+				
 				
 				async function initApp(){	
 					
 					var gameId;
 					//var dataLoaded=false;
 				
-					await firebase.database().ref('/games/').limitToLast(1).on('value', function(snapshot){
+					await firebase.database().ref('tables/'+tableId+'/games/').limitToLast(1).on('value', function(snapshot){
 					
 						if (snapshot.val() == null){
-							window.location.replace("https://dyeup-34223.web.app/open.html");
+							window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 							
 						}
 						else{
@@ -160,7 +175,7 @@
 								}
 								else{
 								
-									window.location.replace("https://dyeup-34223.web.app/open.html");
+									window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 								}
 							
 							});
@@ -312,12 +327,12 @@
 					p3.innerHTML = await getUsername(game.player3);
 					p4.innerHTML = await getUsername(game.player4);
 					
-					var gameRef = firebase.database().ref('games/' + game.id);
+					var gameRef = firebase.database().ref('tables/'+tableId+'/games/' + game.id);
 									gameRef.child("t1Score").on('value', (snapshot) => {updateT1(snapshot.val());});
 									gameRef.child("t2Score").on('value', (snapshot) => {updateT2(snapshot.val());});
 									
 									
-					var gameRef = firebase.database().ref('games/' + game.id+"/points");
+					var gameRef = firebase.database().ref(tableId+'/games/' + game.id+"/points");
 									gameRef.limitToLast(1).on('value', (snapshot) => {
 										snapshot.forEach(async function (childSnapshot) {
 											if (childSnapshot.val().type == 1){
@@ -335,7 +350,7 @@
 				
 				async function fillQueueTable(){
 					document.getElementById("queue-table").style.visibility="hidden";
-					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
+					await firebase.database().ref('tables/'+tableId+'/queue/').limitToFirst(1).once('value', function(snapshot){
 						
 						var games = snapshot.forEach(async function (childSnapshot) {
 
@@ -364,6 +379,7 @@
 				
 				async function endGame(){
 				
+<<<<<<< Updated upstream
 					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
 					
 					// record endTime
@@ -385,14 +401,20 @@
 					var elapTime = elapHour + ":" + elapMin + ":" + elapSec;
 
 					firebase.database().ref('games/' + sessionStorage.gameId).set({elapsed: elapTime});
+=======
+					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({isActive: false});
+					firebase.database().ref('tables/'+tableId).update({status: "open"});
+					
+>>>>>>> Stashed changes
 					
 					
-					await firebase.database().ref('/queue/').limitToFirst(1).once('value', function(snapshot){
+					await firebase.database().ref('tables/'+tableId+'/queue/').limitToFirst(1).once('value', function(snapshot){
 						console.log(snapshot.val());
 						
 						
 						if(snapshot.val()==null){
-							window.location.replace("https://dyeup-34223.web.app/open.html");
+						
+							window.location.replace("https://dyeup-34223.web.app/open.html#"+tableId);
 						
 						}
 					
@@ -405,7 +427,7 @@
 								createTeams(value.left, value.right);
 								//console.log(gameRef);
 								
-								await firebase.database().ref('/queue/'+childSnapshot.key).remove();
+								await firebase.database().ref('tables/'+tableId+'/queue/'+childSnapshot.key).remove();
 								
 								fillQueueTable();
 							});
@@ -440,7 +462,7 @@
 					
 					
 				
-					firebase.database().ref('/games/'+sessionStorage.gameId+"/points/").on('value', function(snapshot){
+					firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points/").on('value', function(snapshot){
 					
 					document.getElementById("p1Tally").innerHTML = "";
 					document.getElementById("p2Tally").innerHTML ="";
@@ -483,25 +505,25 @@
 					var p1Btn = document.getElementById("p1Point");
 					p1Btn.addEventListener('click', e => {
 			
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:0});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:0});
 					});
 				
 					var p2Btn = document.getElementById("p2Point");
 					p2Btn.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:0});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:0});
 					});
 					
 					var p3Btn = document.getElementById("p3Point");
 					p3Btn.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:0});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:0});
 					});
 					
 					var p4Btn = document.getElementById("p4Point");
 					p4Btn.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:0});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:0});
 					});
 					
 					
@@ -513,49 +535,49 @@
 					
 					p1Plunk.addEventListener('click', e => {
 			
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:1});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p1, type:1});
 					});
 				
 					
 					p2Plunk.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:1});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p2, type:1});
 					});
 					
 					
 					p3Plunk.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:1});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p3, type:1});
 					});
 					
 				
 					p4Plunk.addEventListener('click', e => {
 				
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:1});
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").push({id: sessionStorage.p4, type:1});
 					});
 					
 					var p1Prof = document.getElementById("p1Image");
-					var p2Prof = document.getElementById("p1Image");
-					var p3Prof = document.getElementById("p1Image");
-					var p4Prof = document.getElementById("p1Image");
+					var p2Prof = document.getElementById("p2Image");
+					var p3Prof = document.getElementById("p3Image");
+					var p4Prof = document.getElementById("p4Image");
 					
 					p1Prof.addEventListener('click', e=> {
-						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p1);
+						window.location.href="https://dyeup-34223.web.app/profile.html#"+sessionStorage.p1;
 					});
 					p2Prof.addEventListener('click', e=> {
-						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p2);
+						window.location.href="https://dyeup-34223.web.app/profile.html#"+sessionStorage.p2;
 					});
 					p3Prof.addEventListener('click', e=> {
-						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p3);
+						window.location.href="https://dyeup-34223.web.app/profile.html#"+sessionStorage.p3;
 					});
 					p4Prof.addEventListener('click', e=> {
-						window.location.href("https://dyeup-34223.web.app/profile.html#"+sessionStorage.p4);
+						window.location.href="https://dyeup-34223.web.app/profile.html#"+sessionStorage.p4;
 					});
 					
 					var removePoint = document.getElementById("remove");
 					
 					removePoint.addEventListener('click', e=> {
-						firebase.database().ref('games/'+sessionStorage.gameId+"/points").limitToLast(1).once('value', function(snapshot){
+						firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points").limitToLast(1).once('value', function(snapshot){
 						console.log(snapshot.val());
 						
 						
@@ -572,7 +594,7 @@
 									
 					
 									
-									firebase.database().ref('games/'+sessionStorage.gameId+"/points/"+childSnapshot.key).remove();
+									firebase.database().ref('tables/'+tableId+'/games/'+sessionStorage.gameId+"/points/"+childSnapshot.key).remove();
 									
 									fillQueueTable();
 								});
@@ -617,9 +639,10 @@
 					var gameRef = await createGame(player1, player2);
 					
 					var gameId= gameRef.key;
-					await firebase.database().ref('games/'+gameId).update({id:gameId});
+					console.log(gameId);
+					await firebase.database().ref('tables/'+tableId+'/games/'+gameId).update({id:gameId});
 					
-					var setGameVar = await firebase.database().ref('/games/'+gameId).once('value');
+					var setGameVar = await firebase.database().ref('tables/'+tableId+'/games/'+gameId).once('value');
 					console.log(setGameVar.key);
 					setGame(setGameVar.val());	
 						
@@ -654,7 +677,7 @@
 					console.log("right player"+ player2);
 					
 					
-						var snapshot = await firebase.database().ref('/games/' + sessionStorage.gameId).once('value');
+						var snapshot = await firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).once('value');
 						if (snapshot.val().t1Score > snapshot.val().t2Score){
 							playersId = [sessionStorage.p1, sessionStorage.p2, player2, player1]
 							sessionStorage.p3 = player2;
@@ -677,7 +700,8 @@
 					var d = new Date();
 					var startTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 				
-					return gameRef = firebase.database().ref('games/').push({
+					firebase.database().ref('tables/'+tableId).update({status: "live"});
+					return gameRef = firebase.database().ref('tables/'+tableId+'/games/').push({
 						player1: sessionStorage.p1,
 						player2: sessionStorage.p2,
 						player3: sessionStorage.p3,

@@ -100,6 +100,11 @@
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
+				var tableId = window.location.hash.substring(1);
+				if (tableId ==""){
+					window.location.replace("https://dyeup-34223.web.app/tables.html");
+				}
+				
 				
 				const newGameBtn = document.getElementById("newGameBtn");
 				
@@ -137,7 +142,7 @@
 					var gameRef = await createGame(playersName);
 					
 					var gameId= gameRef.key;
-					await firebase.database().ref('games/'+gameId).update({id:gameId});
+					await firebase.database().ref('tables/'+tableId+'/games/'+gameId).update({id:gameId});
 					console.log(gameId);
 					
 					var playersId =[]
@@ -171,7 +176,7 @@
 					firebase.database().ref('teams/' + team2[0]+"-"+team2[1]+"/games/").push(gameId);
 					
 					
-					window.location.replace("https://dyeup-34223.web.app/game.html");
+					window.location.replace("https://dyeup-34223.web.app/game.html#"+tableId);
 				
 				}
 				async function createGame(playersName){
@@ -204,8 +209,8 @@
 					firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					
 					
-				
-					return gameRef = firebase.database().ref('games/').push({
+					firebase.database().ref('tables/'+tableId).update({status: "live"});
+					return gameRef = firebase.database().ref('tables/'+tableId+'/games/').push({
 						player1: playersId[0],
 						player2: playersId[1],
 						player3: playersId[2],

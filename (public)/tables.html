@@ -11,6 +11,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/open.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 	</head>
 	<body class="is-preload">
 
@@ -21,10 +23,24 @@
 					<section id="main">
 						<header>
 							<h1>Select Table</h1>
+							
+								  <table class="center" id="ex-table">
+									  <thead>
+										  <tr style="font-weight: bold;">
+											  <th><span class="text">Table</span></th>
+											  <th><span class="text">Status</span></th>
+											  <th><span class="text">Queue</span></th>
+											  
+										  </tr>
+									  </thead>
+									  <tbody>
+										</tbody> 
+								  </table>
+								
 							<ul>
-								<p><a href="new.html">New Game</a></p>
+								<p><a href="newTable.html">New Table</a></p>
 								<p style="margin-top: -20px;" id="my-profile"></p>
-								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+								
 							</ul>							
 						</header>
 
@@ -60,8 +76,8 @@
 		<script src="/__/firebase/init.js?useEmulator=true"></script>
 			<script>
 				
-				var tableID = window.location.hash.substring(1);
-				async function checkActiveGame(){
+				//var tableID = window.location.hash.substring(1);
+				/*async function checkActiveGame(){
 					// redirect to game.html if active game
 					await firebase.database().ref(tableID+'/games/').limitToLast(1).once('value', function(snapshot){
 						
@@ -85,31 +101,48 @@
 							});
 						}
 					});
-				}
-
-				function checkLoginStatus() {
-					// check if user is logged in
-					firebase.auth().onAuthStateChanged(firebaseUser => {
-						if(firebaseUser){
-							// get UID
-							var userID = firebase.auth().currentUser.uid;
-							// console.log("logged in UID is: " + userID);
-
-							// link My Profile button
-							document.getElementById('my-profile').innerHTML = '<a href="profile.html#' + userID + '">My Profile</a>';
-						}
-						else{
-							console.log("No logged in user");
-							window.location.replace("https://dyeup-34223.web.app/index.html")
-						}
-					});					  
-				}
+				}*/
+				
+				function populate(){	
+				var database = firebase.database();
+				database.ref('/tables/').once('value', function(snapshot){
+					if(snapshot.exists()){
+						var content = '';
+						snapshot.forEach(function(data){
+							
+							console.log(data.key);
+							var val = data.val();
+							console.log(val);
+							var queue;
+							if (typeof val.queue == "undefined"){
+								queue=0;
+							}
+							else{
+								queue = data.child("queue").numChildren();
+							}
+							
+							content +='<tr>';
+							content += '<td style="letter-spacing: -.5px;"><a href="open.html#' + data.key + '">' + val.name.toUpperCase() + '</a></td>';
+							content += '<td>' + val.status + '</td>';
+							content += '<td>' + queue + '</td>';
+							content += '</tr>';
+							
+						});
+						
+						var table = document.getElementById("ex-table");
+						console.log(content);
+						$("#ex-table").append(content);
+						//table.append(content);
+					}
+				});
+			}
 
 				
 				window.onload = async function() {
 					
-					checkLoginStatus();
-					checkActiveGame();	
+					//checkLoginStatus();
+					//checkActiveGame();
+					populate();					
 					
 				};
 			</script>

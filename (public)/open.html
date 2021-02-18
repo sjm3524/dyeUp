@@ -22,7 +22,7 @@
 						<header>
 							<h1>Free Table</h1>
 							<ul>
-								<p><a href="new.html">New Game</a></p>
+								<p><a id ="new">New Game</a></p>
 								<p style="margin-top: -20px;" id="my-profile"></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 							</ul>							
@@ -59,11 +59,15 @@
 		  
 		<script src="/__/firebase/init.js?useEmulator=true"></script>
 			<script>
-				
+				var tableId = window.location.hash.substring(1);
+				console.log(tableId);
+				if (tableId ==""){
+					window.location.replace("https://dyeup-34223.web.app/tables.html");
+				}
 
 				async function checkActiveGame(){
 					// redirect to game.html if active game
-					await firebase.database().ref('/games/').limitToLast(1).once('value', function(snapshot){
+					await firebase.database().ref('tables/'+tableId+'/games/').limitToLast(1).once('value', function(snapshot){
 						
 						if (snapshot.val() == null) {
 							// stay on open.html
@@ -76,7 +80,7 @@
 								gameId=value.id;
 								
 								if (value.isActive) {
-									window.location.replace("https://dyeup-34223.web.app/game.html");
+									window.location.replace("https://dyeup-34223.web.app/game.html#"+tableId);
 								}
 								else {
 									// stay on open.html
@@ -100,7 +104,7 @@
 						}
 						else{
 							console.log("No logged in user");
-							window.location.replace("https://dyeup-34223.web.app/index.html")
+							window.location.replace("https://dyeup-34223.web.app/index.html");
 						}
 					});					  
 				}
@@ -110,6 +114,11 @@
 					
 					checkLoginStatus();
 					checkActiveGame();	
+					var newGame = document.getElementById("new");
+					
+					newGame.addEventListener('click', e => {
+						window.location.replace("https://dyeup-34223.web.app/new.html#"+tableId);
+					});
 					
 				};
 			</script>

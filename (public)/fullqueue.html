@@ -30,7 +30,7 @@
 							</table>
 							<ul>
 								<p></p>
-								<p style="margin-top: -20px;"><a href="queue.html" id="queue" >Queue Up</a></p>
+								<p style="margin-top: -20px;"><a  id="queue" >Queue Up</a></p>
 								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
 								<p style="margin-top: -20px;" id="my-profile"></p>
 							</ul>							
@@ -78,11 +78,20 @@
 				}
 				
 				
-				
+				var tableId = window.location.hash.substring(1);
+				if (tableId ==""){
+					window.location.replace("https://dyeup-34223.web.app/tables.html");
+				}
 				
 				
 		
+				var queueBtn = document.getElementById("queue");
 				
+				queueBtn.addEventListener('click', e => {
+					
+					window.location.href="https://dyeup-34223.web.app/queue.html#"+tableId;
+					
+				});
 
 				
 				window.onload = function() {
@@ -103,7 +112,7 @@
 				
 				async function fillQueueTable(){
 					document.getElementById("queue-table").style.visibility="hidden";
-					await firebase.database().ref('/queue/').once('value', async function(snapshot){
+					await firebase.database().ref('/tables/'+tableId+'/queue/').once('value', async function(snapshot){
 						var teams =[];
 						snapshot.forEach( childSnapshot =>{
 							teams.push(childSnapshot.key);
@@ -111,7 +120,7 @@
 						});
 						content ="";
 							for (const team of teams){
-							var nextTeam = await firebase.database().ref('/queue/' + team).once('value');
+							var nextTeam = await firebase.database().ref('tables/'+tableId+'/queue/' + team).once('value');
 								var playerLeft = nextTeam.child("left").val();
 								var playerRight = nextTeam.child("right").val();
 								console.log("player left is: " + playerLeft);

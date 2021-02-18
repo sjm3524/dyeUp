@@ -60,51 +60,94 @@
 		<script src="/__/firebase/init.js?useEmulator=true"></script>
 			<script>
 				
-				var playerID="kLuWOVZecYdvVeadz20nQ9vd8Lj1";
+				//var playerID="Bl5mNCX2EINWqDeegnKzpbjydP23";
 				var wins=0;
 				var losses=0;
 				var gamesPlayed=0;
+				var winStreak=0;
+				var longestStreak=0;
+				var users = [];
+				var userNames =[];
 				async function checkActiveGame(){
 					// redirect to game.html if active game
-					await firebase.database().ref('tables/-MTd1NleLOMft1aphqcw/games/').once('value', function(snapshot){
-						
-						if (snapshot.val() == null) {
-							// stay on open.html
+					await firebase.database().ref('names/').once('value', function(usershot){
+						usershot.forEach(function (childUser) {
+								console.log(childUser.key);
+								console.log(childUser.val().uid);
+								playerID = childUser.val().uid;
+								users.push(childUser.val().uid);
+								userNames.push(childUser.key);
+							});
+							console.log(users);
+						});
 							
-						}
-						else{
-							var games = snapshot.forEach(function (childSnapshot) {
-								var value = childSnapshot.val();
-								console.log(value.id);
-								gameId=value.id;
+						for (playerID of users){
+							wins=0;
+							losses=0;
+							gamesPlayed=0;
+							winStreak=0;
+							longestStreak=-1;
+							await firebase.database().ref('tables/-MTd1NleLOMft1aphqcw/games/').once('value', function(snapshot){
 								
-								if(value.t1Score == value.t2Score){
-									console.log("TIE ERROR");
-									console.log(gameId);
+								if (snapshot.val() == null) {
+									// stay on open.html
+									
 								}
-								
-								if ((value.player1 == playerID || value.player2 == playerID)){
-									gamesPlayed=gamesPlayed+1;
-									if(value.t1Score> value.t2Score) {
-										wins=wins+1;
-									}else if(value.t2Score> value.t1Score){
-										losses=losses+1;
-									}
+								else{
+									var games = snapshot.forEach(function (childSnapshot) {
+									//console.log(playerId);
+										var value = childSnapshot.val();
+										console.log(value.id);
+										gameId=value.id;
+										//console.log(value);
+										
+										if(value.t1Score == value.t2Score){
+											console.log("TIE ERROR");
+											console.log(gameId);
+										}
+										
+										if ((value.player1 == playerID || value.player2 == playerID)){
+											gamesPlayed=gamesPlayed+1;
+											
+											if(value.t1Score> value.t2Score) {
+											
+												wins=wins+1;
+												winStreak=winStreak+1;
+												if (winStreak > longestStreak){
+													longestStreak = winStreak;
+													firebase.database().ref('users/'+playerID).update({longStreak: winStreak});
+												}
+											}else if(value.t2Score> value.t1Score){
+											
+												losses=losses+1;
+												winStreak=0;
+											}
+										}
+										else if ((value.player3 == playerID || value.player4 == playerID)){
+											gamesPlayed=gamesPlayed+1;
+											if(value.t1Score> value.t2Score) {
+												losses=losses+1;
+												winStreak=0;
+											}else if(value.t2Score> value.t1Score){
+												wins=wins+1;
+												winStreak=winStreak+1;
+												if (winStreak > longestStreak){
+													longestStreak = winStreak;
+													firebase.database().ref('users/'+playerID).update({longStreak: winStreak});
+												}
+											}
+										}
+										console.log("games played: "+gamesPlayed);
+										console.log("wins: "+wins);
+										console.log("losses:  "+losses);
+										console.log("win streak:" + winStreak);
+										console.log(userNames[users.indexOf(playerID)] +" longest streak:" + longestStreak);
+									});
 								}
-								else if ((value.player3 == playerID || value.player4 == playerID)){
-									gamesPlayed=gamesPlayed+1;
-									if(value.t1Score> value.t2Score) {
-										losses=losses+1;
-									}else if(value.t2Score> value.t1Score){
-										wins=wins+1;
-									}
-								}
-								console.log("games played: "+gamesPlayed);
-								console.log("wins: "+wins);
-								console.log("losses:  "+losses);
 							});
 						}
-					});
+						
+					
 				}
 
 				

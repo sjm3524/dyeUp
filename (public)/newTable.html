@@ -20,11 +20,37 @@
 				<!-- Main -->
 					<section id="main">
 						<header>
-							<h1>Free Table</h1>
+							<label for="name">Table Name</label>
+							<input type="text" id="name" name="table"><br><br>
+							
+							
+							<p>Inside or Outside?</p>
+							<input type="radio" id="inside" name="loc" value="inside">
+							  <label for="inside">Inside</label><br>
+							  <input type="radio" id="outside" name="loc" value="outside">
+							  <label for="outside">Outside</label><br>
+							
+							<br>
+							<p>Points to win</p>
+							<input type="number" id="pointsToWin" name="points" min="7" max="15">
+							
+							
+							<p>Is the table win by 2?</p>
+							<input type="radio" id="always" name="win2" value="always">
+							  <label for="always">Always</label><br>
+							  <input type="radio" id="sometimes" name="win2" value="sometimes">
+							  <label for="sometimes">Sometimes</label><br>
+							  <input type="radio" id="never" name="win2" value="never">
+							  <label for="never">Never</label>
+							  <br>
+							  
+							<br>
+							<button type="button" id="create">Create Table</button>
+								
 							<ul>
-								<p><a href="new.html">New Game</a></p>
+								
 								<p style="margin-top: -20px;" id="my-profile"></p>
-								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+								
 							</ul>							
 						</header>
 
@@ -60,62 +86,49 @@
 		<script src="/__/firebase/init.js?useEmulator=true"></script>
 			<script>
 				
-				var playerID="kLuWOVZecYdvVeadz20nQ9vd8Lj1";
-				var wins=0;
-				var losses=0;
-				var gamesPlayed=0;
-				async function checkActiveGame(){
-					// redirect to game.html if active game
-					await firebase.database().ref('tables/-MTd1NleLOMft1aphqcw/games/').once('value', function(snapshot){
-						
-						if (snapshot.val() == null) {
-							// stay on open.html
-							
-						}
-						else{
-							var games = snapshot.forEach(function (childSnapshot) {
-								var value = childSnapshot.val();
-								console.log(value.id);
-								gameId=value.id;
-								
-								if(value.t1Score == value.t2Score){
-									console.log("TIE ERROR");
-									console.log(gameId);
-								}
-								
-								if ((value.player1 == playerID || value.player2 == playerID)){
-									gamesPlayed=gamesPlayed+1;
-									if(value.t1Score> value.t2Score) {
-										wins=wins+1;
-									}else if(value.t2Score> value.t1Score){
-										losses=losses+1;
-									}
-								}
-								else if ((value.player3 == playerID || value.player4 == playerID)){
-									gamesPlayed=gamesPlayed+1;
-									if(value.t1Score> value.t2Score) {
-										losses=losses+1;
-									}else if(value.t2Score> value.t1Score){
-										wins=wins+1;
-									}
-								}
-								console.log("games played: "+gamesPlayed);
-								console.log("wins: "+wins);
-								console.log("losses:  "+losses);
-							});
-						}
-					});
-				}
-
 				
+				
+
+		
 
 				
 				window.onload = async function() {
 					
-					
-					checkActiveGame();	
+					initApp()
+						
 					
 				};
+				
+				
+				
+				async function initApp(){
+					const create = document.getElementById("create");
+	
+	
+	
+					create.addEventListener('click', async e => {
+					
+						const tableName = document.getElementById("name").value.trim().toLowerCase();
+						const pointsToWin = document.getElementById("pointsToWin").value.trim();
+						
+						var newRef = await firebase.database().ref('tables/').push({
+							name: tableName,
+							location: document.querySelector('input[name="loc"]:checked').value,
+							pointsToWin: pointsToWin,
+							winTwo: document.querySelector('input[name="win2"]:checked').value,
+							games:null,
+	
+						});
+						var newId = newRef.key;
+		
+						await firebase.database().ref('tableNames/' + tableName).set({id: newId});
+						
+						window.location.replace("https://dyeup-34223.web.app/tables.html");
+						
+						});
+				
+				
+				}
 			</script>
 			<script>
 				if ('addEventListener' in window) {

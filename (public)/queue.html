@@ -94,6 +94,12 @@
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
 				
+				var tableId = window.location.hash.substring(1);
+				if (tableId ==""){
+					window.location.replace("https://dyeup-34223.web.app/tables.html");
+				}
+				
+				
 				const queueBtn =document.getElementById("queueBtn");
 				const player1 =document.getElementById("player3");
 				const player2 =document.getElementById("player4");
@@ -136,12 +142,12 @@
 					}
 					console.log(playersObj);
 					*/
-					if (confirm('add'+player1+' and '+player2+' to the queue?')) {
-						await firebase.database().ref('queue/').push({
+					if (confirm('add '+player1+' and '+player2+' to the queue?')) {
+						await firebase.database().ref('tables/'+tableId+'/queue/').push({
 							left: p1Id,
 							right: p2Id,
 						});
-						window.location.replace("https://dyeup-34223.web.app/game.html");
+						window.location.replace("https://dyeup-34223.web.app/game.html#"+tableId);
 					}
 					else {
 						// do nothing

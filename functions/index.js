@@ -22,7 +22,7 @@ admin.initializeApp();
 
 
 
-exports.addPoint = functions.database.ref('games/{gameId}/points/{pointId}').onCreate( async (snapshot, context) => {
+exports.addPoint = functions.database.ref('tables/{tableId}/games/{gameId}/points/{pointId}').onCreate( async (snapshot, context) => {
 	
 			var point = snapshot.val();
 
@@ -43,15 +43,15 @@ exports.addPoint = functions.database.ref('games/{gameId}/points/{pointId}').onC
 							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(1)});
 						}
 						
-						var game = await admin.database().ref('/games/' + context.params.gameId).once('value');
+						var game = await admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).once('value');
 							
 						
 						
 						if(point.id === game.val().player1 || point.id === game.val().player2){
-							admin.database().ref('games/' + context.params.gameId).update({t1Score: admin.database.ServerValue.increment(1)});
+							admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).update({t1Score: admin.database.ServerValue.increment(1)});
 						}
 						else{
-							admin.database().ref('games/' + context.params.gameId).update({t2Score: admin.database.ServerValue.increment(1)});
+							admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).update({t2Score: admin.database.ServerValue.increment(1)});
 						}
 					}
 					
@@ -67,7 +67,7 @@ exports.addPoint = functions.database.ref('games/{gameId}/points/{pointId}').onC
 		
 });
 
-exports.removePoint = functions.database.ref('games/{gameId}/points/{pointId}').onDelete( async (snapshot, context) => {
+exports.removePoint = functions.database.ref('tables/{tableId}/games/{gameId}/points/{pointId}').onDelete( async (snapshot, context) => {
 	
 			var point = snapshot.val();
 
@@ -88,15 +88,15 @@ exports.removePoint = functions.database.ref('games/{gameId}/points/{pointId}').
 							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
 						}
 						
-						var game = await admin.database().ref('/games/' + context.params.gameId).once('value');
+						var game = await admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).once('value');
 							
 						
 						
 						if(point.id === game.val().player1 || point.id === game.val().player2){
-							admin.database().ref('games/' + context.params.gameId).update({t1Score: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).update({t1Score: admin.database.ServerValue.increment(-1)});
 						}
 						else{
-							admin.database().ref('games/' + context.params.gameId).update({t2Score: admin.database.ServerValue.increment(-1)});
+							admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).update({t2Score: admin.database.ServerValue.increment(-1)});
 						}
 					}
 					
@@ -104,7 +104,7 @@ exports.removePoint = functions.database.ref('games/{gameId}/points/{pointId}').
 });
     
 	
-exports.endGame = functions.database.ref('games/{gameId}/isActive/').onUpdate( async (change, context) => {
+exports.endGame = functions.database.ref('tables/{tableId}/games/{gameId}/isActive/').onUpdate( async (change, context) => {
 	
 			var isActive = change.after.val();
 			var oldIsActive = change.before.val();
@@ -118,7 +118,7 @@ exports.endGame = functions.database.ref('games/{gameId}/isActive/').onUpdate( a
 					console.log(isActive);
 					console.log(oldIsActive);
 					if(isActive == false && oldIsActive ==true){
-						var snapshot = await admin.database().ref('/games/' + context.params.gameId).once('value');
+						var snapshot = await admin.database().ref('/tables/'+context.params.tableId+'/games/' + context.params.gameId).once('value');
 						var p1 = snapshot.val().player1;
 						var p2 = snapshot.val().player2;
 						var p3 = snapshot.val().player3;
