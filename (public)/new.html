@@ -208,6 +208,8 @@
 					firebase.database().ref('/users/' + playersId[2]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
 					
+					var d = new Date();
+					var startTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 					
 					firebase.database().ref('tables/'+tableId).update({status: "live"});
 					return gameRef = firebase.database().ref('tables/'+tableId+'/games/').push({
@@ -220,6 +222,7 @@
 						t2Score:0,
 						isActive: true,
 						id: null,
+						start: startTime,
 					//profile_picture : imageUrl
 					});
 					

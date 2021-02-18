@@ -380,15 +380,15 @@
 				async function endGame(){
 				
 
-					firebase.database().ref('games/' + sessionStorage.gameId).update({isActive: false});
+					firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({isActive: false});
 					firebase.database().ref('tables/'+tableId).update({status: "open"});
 					// record endTime
 					var e = new Date();
 					var endTime = e.getHours() + ":" + e.getMinutes() + ":" + e.getSeconds();
-					firebase.database().ref('games/' + sessionStorage.gameId).set({end: endTime});
+					firebase.database().ref('games/' + sessionStorage.gameId).update({end: endTime});
 
 					// parse times and find elapsedTime
-					var start = firebase.database().ref('games/' + sessionStorage.gameId + '/startTime').get();
+					var start = firebase.database().ref('tables/' +tableId+"/games/"+ sessionStorage.gameId + '/startTime').get();
 					var startHours = start.slice(0,2);
 					var endHours = endTime.slice(0,2);
 					var startMin = start.slice(3,5);
@@ -400,7 +400,7 @@
 					var elapSec = endSec - startSec;
 					var elapTime = elapHour + ":" + elapMin + ":" + elapSec;
 
-					firebase.database().ref('games/' + sessionStorage.gameId).set({elapsed: elapTime});
+					firebase.database().ref('games/' + sessionStorage.gameId).update({elapsed: elapTime});
 
 					
 					
@@ -707,7 +707,7 @@
 						t2Score:0,
 						isActive: true,
 						id: null,
-						start: startTime
+						start: startTime,
 					//profile_picture : imageUrl
 					});
 					
