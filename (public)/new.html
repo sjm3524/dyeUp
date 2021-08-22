@@ -56,6 +56,7 @@
 							<ul>
 								<p></p>
 								<p><a  id="newGameBtn" class="button">Start</a></p>
+								<p><a  id="predictBtn" class="button">Predict Data</a></p>
 								<p style="margin-top: -20px;"><a href="open.html">&#8592; Back</a></p>
 							</ul>
 							
@@ -104,6 +105,39 @@
 				if (tableId ==""){
 					window.location.replace("https://dyeup-34223.web.app/tables.html");
 				}
+				
+				
+				
+				const predictBtn = document.getElementById("predictBtn");
+				
+				predictBtn.addEventListener('click', async e =>{
+					const p1 = document.getElementById("player1").value.trim().toLowerCase();
+					const p2 = document.getElementById("player2").value.trim().toLowerCase();
+					const p3 = document.getElementById("player3").value.trim().toLowerCase();
+					const p4 = document.getElementById("player4").value.trim().toLowerCase();
+					
+					
+					var playersName = new Array(p1,p2,p3,p4);
+					
+					var playersId =[]
+					for (i=0; i<4; i++){
+						var snapshot = await firebase.database().ref('/names/' + playersName[i]).once('value');
+						if (snapshot.val() == null){
+							return alert("The user " + playersName[i] +" does not exist");
+						}
+						else{
+							playersId.push(snapshot.val().uid);
+						}
+					}
+					sessionStorage.p1Predict=playersId[0];
+					sessionStorage.p2Predict=playersId[1];
+					sessionStorage.p3Predict=playersId[2];
+					sessionStorage.p4Predict=playersId[3];
+					
+					window.location.replace("https://dyeup-34223.web.app/predictions.html#"+tableId);
+					
+				
+				});
 				
 				
 				const newGameBtn = document.getElementById("newGameBtn");
@@ -203,10 +237,19 @@
 					}
 					console.log(playersObj);
 					*/
-					firebase.database().ref('/users/' + playersId[0]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('users/' + playersId[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('/users/' + playersId[2]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					var table = await firebase.database().ref('/tables/' + tableId).once('value');
+					if (table.val().location =="outside"){
+						firebase.database().ref('/users/' + playersId[0]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[1]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('/users/' + playersId[2]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[3]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+					}
+					else if (table.val().location =="inside"){
+						firebase.database().ref('/users/' + playersId[0]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('/users/' + playersId[2]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					}
 					
 					var d = new Date();
 					var startTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();

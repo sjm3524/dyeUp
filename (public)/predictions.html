@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<!--
+	Identity by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>dyeUp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/open.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main">
+						<header>
+							<table style="width:100%; ">
+								<tr>
+									<th colspan="3" class="score" id="team1" style = "font-size:300%;"></td>
+									<th colspan="3" class ="score" id="team2" style = "font-size:300%;"></td>
+								</tr>
+								<tr>
+										<td id = "p1Point" class ="pointsTop">p+</td>
+										<td><img src="assets/css/images/default.png" id="p1Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player1"></td>
+										
+										<td rowspan="2" id="p1Tally" class="mid-elmnt-right" ></td>
+										<td rowspan="2" id= "p3Tally" class="mid-elmnt-left"></td>
+										<td><img src="assets/css/images/default.png" id="p3Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player3"></td>
+										<td id = "p3Point" class ="pointsTop">p+</td>
+									
+									
+								</tr>
+								<tr>
+									<td id = "p1Plunk" class ="points">k+</td>
+									<td colspan ="1" id="p1">Player 1</td>
+									
+									<td colspan ="1" id="p3">Player 3</td>
+									<td id = "p3Plunk" class ="points">k+</td>
+								</tr>
+								
+								
+								
+								<tr>
+										<td id = "p2Point" class ="pointsTop">p+</td>
+										<td><img src="assets/css/images/default.png" id="p2Image" class="game-icon" style ="border-radius: 50%;"  width="50px"  alt="player2"></td>	
+										<td rowspan="2" id= "p2Tally" class="mid-elmnt-right"></td>
+										<td rowspan="2" id= "p4Tally" class="mid-elmnt-left"></td>
+										<td><img src="assets/css/images/default.png" id="p4Image" class="game-icon" style ="border-radius: 50%;"  width="50px" alt="player4"></td>	
+										<td id = "p4Point" class ="pointsTop">p+</td>
+								</tr>
+								<tr>
+									<td id = "p2Plunk" class ="points">k+</td>
+									<td colspan="1" id="p2">Player 2</td>
+									
+									<td colspan="1"  id="p4">Player 4</td>
+									<td id = "p4Plunk" class ="points">k+</td>
+								</tr>
+							  </table>
+							  <div class="w3-bar">
+								<div class="w3-bar-item w3-green" id="team1p">0</div>
+								<div class="w3-bar-item w3-red" id="team2p">0</div>
+								
+							  </div>
+							  
+							 
+							  
+
+							
+							<ul>
+								<p></p>
+								<p><a id="endGame">End Game</a></p>
+								<p style="margin-top: -20px;"><a  id="queue" >Queue</a></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+								<p style="margin-top: -20px;" id="my-profile"></p>
+							</ul>							
+						</header>
+
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; STOBLE</li><li>OUTHOUSE INC</li>
+						</ul>
+					</footer>
+
+			</div>
+			
+			
+			<script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-performance.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+			
+			
+			<script>
+			var tableId = window.location.hash.substring(1);
+				if (tableId ==""){
+					window.location.replace("https://dyeup-34223.web.app/tables.html");
+				}
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+				window.onload = function() {
+					setGame();
+				makeGetRequest();
+					
+				};
+				
+				
+				function makeGetRequest(){
+						const Http = new XMLHttpRequest();
+						const url = 'https://jimmymdugan.pythonanywhere.com/?table='+tableId+'&player1='+sessionStorage.p1Predict+'&player2='+sessionStorage.p2Predict+'&player3='+sessionStorage.p3Predict+'&player4='+sessionStorage.p4Predict;
+						Http.open("GET", url);
+						Http.send();
+
+						Http.onreadystatechange = (e) => {
+							//console.log(Http.responseText)
+								console.log(Http.responseText);
+								var scores = JSON.parse(Http.responseText);
+								console.log(scores);
+								if(scores.team1 == -1){
+									document.getElementById("team1p").innerHTML="Insufficient data";
+								}
+								else{
+									document.getElementById("team1p").innerHTML=scores.team1;
+									var team1Per = ((scores.team1/14)*100)+'%';
+									document.getElementById("team1p").style.width = team1Per;
+								}
+								if(scores.team2 == -2){
+									document.getElementById("team2p").innerHTML="Insufficient data";
+								}
+								else{
+								
+									document.getElementById("team2p").innerHTML=scores.team2;
+									
+									var team2Per = ((scores.team2/14)*100)+'%';
+									
+									document.getElementById("team2p").style.width = team2Per;
+									
+								}
+								document.getElementById("team2p").style.cssFloat = "right";
+								
+							
+						}
+					}
+					
+					async function setGame(){
+					
+					
+						var player1Ref = await firebase.database().ref('users/' + sessionStorage.p1Predict);
+						player1Ref.once('value', async (snapshot) => {
+						value = snapshot.val();
+						console.log(snapshot.key);
+						if (value.profile_picture != "default.png") {
+							// display uploaded image from storage
+							var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+							console.log(storageRef);
+							storageRef.getDownloadURL().then(function(url) {
+								var test = url;
+								console.log(test);
+								document.getElementById('p1Image').src = test;
+							});
+						}
+						});
+						
+						var player4Ref = await firebase.database().ref('users/' + sessionStorage.p4Predict);
+						player4Ref.once('value', async (snapshot) => {
+						value = snapshot.val();
+						if (value.profile_picture != "default.png") {
+							// display uploaded image from storage
+							var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+							console.log(storageRef);
+							storageRef.getDownloadURL().then(function(url) {
+								var test = url;
+								console.log(test);
+								document.getElementById('p4Image').src = test;
+							});
+						}
+						});
+						
+						var player2Ref = await firebase.database().ref('users/' +  sessionStorage.p2Predict);
+						player2Ref.once('value', async (snapshot) => {
+						value = snapshot.val();
+						if (value.profile_picture != "default.png") {
+							// display uploaded image from storage
+							var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+							console.log(storageRef);
+							storageRef.getDownloadURL().then(function(url) {
+								var test = url;
+								console.log(test);
+								document.getElementById('p2Image').src = test;
+							});
+						}
+						});
+						
+						var player3Ref = await firebase.database().ref('users/' + sessionStorage.p3Predict);
+						player3Ref.once('value', async (snapshot) => {
+						value = snapshot.val();
+						if (value.profile_picture != "default.png") {
+							// display uploaded image from storage
+							var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+							console.log(storageRef);
+							storageRef.getDownloadURL().then(function(url) {
+								var test = url;
+								console.log(test);
+								document.getElementById('p3Image').src = test;
+							});
+						}
+						});
+						
+						
+					
+						p1.innerHTML = await getUsername(sessionStorage.p1Predict);
+						p2.innerHTML = await getUsername(sessionStorage.p2Predict);
+						p3.innerHTML = await getUsername(sessionStorage.p3Predict);
+						p4.innerHTML = await getUsername(sessionStorage.p4Predict);
+					}
+				
+					async function getUsername(uId){
+					
+					var snapshot = await firebase.database().ref('/users/' + uId).once('value');
+						return snapshot.val().username;
+					
+				
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				</script>
+			
+			
+			
+	</body>
+</html>

@@ -27,7 +27,7 @@ exports.addPoint = functions.database.ref('tables/{tableId}/games/{gameId}/point
 			var point = snapshot.val();
 
 			
-										
+					var table = await admin.database().ref('/tables/' + context.params.tableId).once('value');
 	
 					
 					console.log(point);
@@ -35,12 +35,23 @@ exports.addPoint = functions.database.ref('tables/{tableId}/games/{gameId}/point
 					console.log("adding point")
 					if(point){
 						console.log(point.id);
-						if (point.type <1){
-							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(1)});
+						if (table.val().location == "outside"){
+							if (point.type <1){
+								admin.database().ref('users/' + point.id).update({oPoints: admin.database.ServerValue.increment(1)});
+							}
+							else{
+								admin.database().ref('users/' + point.id).update({oPlunks: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + point.id).update({oPoints: admin.database.ServerValue.increment(1)});
+							}
 						}
-						else{
-							admin.database().ref('users/' + point.id).update({plunks: admin.database.ServerValue.increment(1)});
-							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(1)});
+						else if (table.val().location == "inside"){
+							if (point.type <1){
+								admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(1)});
+							}
+							else{
+								admin.database().ref('users/' + point.id).update({plunks: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(1)});
+							}
 						}
 						
 						var game = await admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).once('value');
@@ -72,7 +83,7 @@ exports.removePoint = functions.database.ref('tables/{tableId}/games/{gameId}/po
 			var point = snapshot.val();
 
 			
-										
+					var table = await admin.database().ref('/tables/' + context.params.tableId).once('value');				
 	
 					
 					console.log(point);
@@ -80,12 +91,23 @@ exports.removePoint = functions.database.ref('tables/{tableId}/games/{gameId}/po
 					console.log("removing point")
 					if(point){
 						console.log(point.id);
-						if (point.type <1){
-							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
+						if (table.val().location == "outside"){
+							if (point.type <1){
+								admin.database().ref('users/' + point.id).update({oPoints: admin.database.ServerValue.increment(-1)});
+							}
+							else{
+								admin.database().ref('users/' + point.id).update({oPlunks: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('users/' + point.id).update({oPoints: admin.database.ServerValue.increment(-1)});
+							}
 						}
-						else{
-							admin.database().ref('users/' + point.id).update({plunks: admin.database.ServerValue.increment(-1)});
-							admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
+						else if (table.val().location == "inside"){
+							if (point.type <1){
+								admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
+							}
+							else{
+								admin.database().ref('users/' + point.id).update({plunks: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('users/' + point.id).update({points: admin.database.ServerValue.increment(-1)});
+							}
 						}
 						
 						var game = await admin.database().ref('/tables/' + context.params.tableId+'/games/' + context.params.gameId).once('value');
@@ -109,7 +131,7 @@ exports.endGame = functions.database.ref('tables/{tableId}/games/{gameId}/isActi
 			var isActive = change.after.val();
 			var oldIsActive = change.before.val();
 
-			
+			var table = await admin.database().ref('/tables/' + context.params.tableId).once('value');
 				
 					
 					
@@ -129,32 +151,64 @@ exports.endGame = functions.database.ref('tables/{tableId}/games/{gameId}/isActi
 						team1.sort();
 						team2.sort();
 						
-						
-						admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: admin.database.ServerValue.increment(1)});
-						admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: admin.database.ServerValue.increment(1)});
-						
-						
-						if (snapshot.val().t1Score > snapshot.val().t2Score){
-							admin.database().ref('/users/' + p1).update({wins: admin.database.ServerValue.increment(1)});
-							admin.database().ref('users/' + p2).update({wins: admin.database.ServerValue.increment(1)});
-							admin.database().ref('/users/' + p3).update({losses: admin.database.ServerValue.increment(1)});
-							admin.database().ref('users/' + p4).update({losses: admin.database.ServerValue.increment(1)});
-							admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({wins: admin.database.ServerValue.increment(1)});
+						if (table.val().location == "outside"){
+							admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({oGamesPlayed: admin.database.ServerValue.increment(1)});
+							admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({oGamesPlayed: admin.database.ServerValue.increment(1)});
 						}
-						else if(snapshot.val().t1Score < snapshot.val().t2Score){
-							admin.database().ref('/users/' + p3).update({wins: admin.database.ServerValue.increment(1)});
-							admin.database().ref('users/' + p4).update({wins: admin.database.ServerValue.increment(1)});
-							admin.database().ref('/users/' + p1).update({losses: admin.database.ServerValue.increment(1)});
-							admin.database().ref('users/' + p2).update({losses: admin.database.ServerValue.increment(1)});
-							admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({wins: admin.database.ServerValue.increment(1)});
+						else if (table.val().location == "inside"){
+							admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({oGamesPlayed: admin.database.ServerValue.increment(1)});
+							admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({oGamesPlayed: admin.database.ServerValue.increment(1)});
 						}
-						else if(snapshot.val().t1Score == 0 && snapshot.val().t2Score == 0){
-							admin.database().ref('/users/' + p1).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
-							admin.database().ref('users/' + p2).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
-							admin.database().ref('/users/' + p3).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
-							admin.database().ref('users/' + p4).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
-							admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
-							admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+						
+						if (table.val().location == "inside"){
+							if (snapshot.val().t1Score > snapshot.val().t2Score){
+								admin.database().ref('/users/' + p1).update({wins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p2).update({wins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('/users/' + p3).update({losses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p4).update({losses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({wins: admin.database.ServerValue.increment(1)});
+							}
+							else if(snapshot.val().t1Score < snapshot.val().t2Score){
+								admin.database().ref('/users/' + p3).update({wins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p4).update({wins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('/users/' + p1).update({losses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p2).update({losses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({wins: admin.database.ServerValue.increment(1)});
+							}
+							else if(snapshot.val().t1Score == 0 && snapshot.val().t2Score == 0){
+								admin.database().ref('/users/' + p1).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('users/' + p2).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('/users/' + p3).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('users/' + p4).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({gamesPlayed: admin.database.ServerValue.increment(-1)});
+							}
+						}
+						else if (table.val().location == "outside"){
+							if (snapshot.val().t1Score > snapshot.val().t2Score){
+								admin.database().ref('/users/' + p1).update({oWins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p2).update({oWins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('/users/' + p3).update({oLosses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p4).update({oLosses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({oWins: admin.database.ServerValue.increment(1)});
+							}
+							else if(snapshot.val().t1Score < snapshot.val().t2Score){
+								admin.database().ref('/users/' + p3).update({oWins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p4).update({oWins: admin.database.ServerValue.increment(1)});
+								admin.database().ref('/users/' + p1).update({oLosses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('users/' + p2).update({oLosses: admin.database.ServerValue.increment(1)});
+								admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({oWins: admin.database.ServerValue.increment(1)});
+							}
+							else if(snapshot.val().t1Score == 0 && snapshot.val().t2Score == 0){
+								admin.database().ref('/users/' + p1).update({oGamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('users/' + p2).update({oGamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('/users/' + p3).update({oGamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('users/' + p4).update({oGamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('teams/' + team1[0]+"-"+team1[1]).update({oGamesPlayed: admin.database.ServerValue.increment(-1)});
+								admin.database().ref('teams/' + team2[0]+"-"+team2[1]).update({oGamesPlayed: admin.database.ServerValue.increment(-1)});
+							}
+							
+							
 						}
 
 						// check for teacup

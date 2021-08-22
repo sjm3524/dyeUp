@@ -62,11 +62,17 @@
 									<td id = "p4Plunk" class ="points">k+</td>
 								</tr>
 							  </table>
+							  <div class="w3-bar">
+								<div class="w3-bar-item w3-green" id="team1p">0</div>
+								<div class="w3-bar-item w3-red" id="team2p">0</div>
+								
+							  </div>
 							  
 							  <ul>
 							  <p></p>
 							  <p style="margin-top: -20px;"><a id="remove" >Remove Last Point</a></p>
 							  </ul>
+							  
 
 							<table id="queue-table" style="width: 100%; margin-top: 10px;">
 								<th colspan="2" id="queue-table-header">Next Up</th>
@@ -79,8 +85,10 @@
 								<p></p>
 								<p><a id="endGame">End Game</a></p>
 								<p style="margin-top: -20px;"><a  id="queue" >Queue</a></p>
-								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">Out Leaderboard</a></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">In Leaderboard</a></p>
 								<p style="margin-top: -20px;" id="my-profile"></p>
+								<p id="stats>h</p>
 							</ul>							
 						</header>
 
@@ -232,11 +240,13 @@
 				function updateT1(score){
 					var t1Score = document.getElementById("team1");
 					t1Score.innerHTML = score;
+					 makeGetRequest();
 				}
 				
 				function updateT2(score){
 					var t2Score = document.getElementById("team2");
 					t2Score.innerHTML = score;
+					 makeGetRequest();
 				}
 				
 				async function setGame(game){
@@ -259,13 +269,18 @@
 					sessionStorage.p4=game.player4;
 					sessionStorage.gameId= game.id;
 					
+					//await makeGetRequest();
+					
+					
+					
+					
 					var player1Ref = await firebase.database().ref('users/' + game.player1);
-					player1Ref.once('value', (snapshot) => {
+					player1Ref.once('value', async (snapshot) => {
 					value = snapshot.val();
 					console.log(snapshot.key);
 					if (value.profile_picture != "default.png") {
 						// display uploaded image from storage
-						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
 						console.log(storageRef);
 						storageRef.getDownloadURL().then(function(url) {
 							var test = url;
@@ -276,11 +291,11 @@
 					});
 					
 					var player4Ref = await firebase.database().ref('users/' + game.player4);
-					player4Ref.once('value', (snapshot) => {
+					player4Ref.once('value', async (snapshot) => {
 					value = snapshot.val();
 					if (value.profile_picture != "default.png") {
 						// display uploaded image from storage
-						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
 						console.log(storageRef);
 						storageRef.getDownloadURL().then(function(url) {
 							var test = url;
@@ -291,11 +306,11 @@
 					});
 					
 					var player2Ref = await firebase.database().ref('users/' + game.player2);
-					player2Ref.once('value', (snapshot) => {
+					player2Ref.once('value', async (snapshot) => {
 					value = snapshot.val();
 					if (value.profile_picture != "default.png") {
 						// display uploaded image from storage
-						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
 						console.log(storageRef);
 						storageRef.getDownloadURL().then(function(url) {
 							var test = url;
@@ -306,11 +321,11 @@
 					});
 					
 					var player3Ref = await firebase.database().ref('users/' + game.player3);
-					player3Ref.once('value', (snapshot) => {
+					player3Ref.once('value', async (snapshot) => {
 					value = snapshot.val();
 					if (value.profile_picture != "default.png") {
 						// display uploaded image from storage
-						var storageRef = firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
+						var storageRef = await firebase.storage().ref('/users/' + snapshot.key + '/profilePicture/' + value.profile_picture);
 						console.log(storageRef);
 						storageRef.getDownloadURL().then(function(url) {
 							var test = url;
@@ -347,6 +362,53 @@
 					increaseTally();
 					
 				}
+				
+				
+				
+				function makeGetRequest(){
+						const Http = new XMLHttpRequest();
+						const url = 'https://jimmymdugan.pythonanywhere.com/?table='+tableId+'&player1='+sessionStorage.p1+'&player2='+sessionStorage.p2+'&player3='+sessionStorage.p3+'&player4='+sessionStorage.p4;
+						Http.open("GET", url);
+						Http.send();
+
+						Http.onreadystatechange = (e) => {
+							//console.log(Http.responseText)
+							
+								var scores = JSON.parse(Http.responseText);
+								//document.getElementById("stats").innerHTML=Http.responseText;
+								console.log(scores);
+								if(scores.team1 == -1){
+									document.getElementById("team1p").innerHTML="Insufficient data";
+								}
+								else{
+									document.getElementById("team1p").innerHTML=scores.team1;
+									var team1Per = ((scores.team1/14)*100)+'%';
+									document.getElementById("team1p").style.width = team1Per;
+									firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({team1Predict: scores.team1});
+								}
+								if(scores.team2 == -1){
+									document.getElementById("team2p").innerHTML="Insufficient data";
+								}
+								else{
+								
+									document.getElementById("team2p").innerHTML=scores.team2;
+									
+									var team2Per = ((scores.team2/14)*100)+'%';
+									
+									document.getElementById("team2p").style.width = team2Per;
+									
+									firebase.database().ref('tables/'+tableId+'/games/' + sessionStorage.gameId).update({team2Predict: scores.team2});
+									
+								}
+								document.getElementById("team2p").style.cssFloat = "right";
+								
+							
+						}
+					}
+				
+				
+				
+				
 				
 				async function fillQueueTable(){
 					document.getElementById("queue-table").style.visibility="hidden";
@@ -420,7 +482,7 @@
 								console.log(childSnapshot.key);
 								
 								
-								createTeams(value.left, value.right);
+								await createTeams(value.left, value.right);
 								//console.log(gameRef);
 								
 								await firebase.database().ref('tables/'+tableId+'/queue/'+childSnapshot.key).remove();
@@ -687,10 +749,19 @@
 					
 					 console.log(playersId);
 						
-					firebase.database().ref('/users/' + sessionStorage.p1).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('users/' + sessionStorage.p2).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('/users/' + sessionStorage.p3).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
-					firebase.database().ref('users/' + sessionStorage.p4).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					var table = await firebase.database().ref('/tables/' + tableId).once('value');
+					if (table.val().location =="outside"){
+						firebase.database().ref('/users/' + playersId[0]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[1]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('/users/' + playersId[2]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[3]).update({oGamesPlayed: firebase.database.ServerValue.increment(1)});
+					}
+					else if (table.val().location =="inside"){
+						firebase.database().ref('/users/' + playersId[0]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[1]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('/users/' + playersId[2]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+						firebase.database().ref('users/' + playersId[3]).update({gamesPlayed: firebase.database.ServerValue.increment(1)});
+					}
 
 					// record game start time
 					var d = new Date();

@@ -60,13 +60,15 @@
 		<script src="/__/firebase/init.js?useEmulator=true"></script>
 			<script>
 				
-				var playerID="kLuWOVZecYdvVeadz20nQ9vd8Lj1";
+				var playerID="o3nJYeeBB8O697Uez58wx8kjr023";
+				//var tableId="-MTx3miNRiK3MqH43FdZ";
+				var tableId="-MTd1NleLOMft1aphqcw";
 				var wins=0;
 				var losses=0;
 				var gamesPlayed=0;
 				async function checkActiveGame(){
 					// redirect to game.html if active game
-					await firebase.database().ref('tables/-MTd1NleLOMft1aphqcw/games/').once('value', function(snapshot){
+					await firebase.database().ref('tables/'+tableId+'/games/').once('value', function(snapshot){
 						
 						if (snapshot.val() == null) {
 							// stay on open.html
@@ -106,6 +108,27 @@
 						}
 					});
 				}
+				
+				function getURL(){
+					
+					var data ={'table': "-MTd1NleLOMft1aphqcw",
+                    'player1': "Axaq659r3WYKe8yBZNadaP7ObVA2",
+                    'player2': "QbwVCbnmuMf3OipI16BRGvkMGx73",
+                    'player3': "nZR6my28pKUWaO0Ahk7il2PG7X62",
+                    'player4': "Bl5mNCX2EINWqDeegnKzpbjydP23"};
+					
+					const Http = new XMLHttpRequest();
+					const url='https://jimmymdugan.pythonanywhere.com/?table=-MTd1NleLOMft1aphqcw&player1=Axaq659r3WYKe8yBZNadaP7ObVA2&player2=QbwVCbnmuMf3OipI16BRGvkMGx73&player3=nZR6my28pKUWaO0Ahk7il2PG7X62&player4=Bl5mNCX2EINWqDeegnKzpbjydP23';
+					Http.open("GET", url);
+					Http.send();
+
+					Http.onreadystatechange = (e) => {
+						console.log(Http.responseText)
+					}
+				
+				
+				
+				}
 
 				
 
@@ -113,8 +136,8 @@
 				window.onload = async function() {
 					
 					
-					checkActiveGame();	
-					
+					//checkActiveGame();	
+					getURL();
 				};
 			</script>
 			<script>

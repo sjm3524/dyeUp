@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<!--
+	Identity by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>dyeUp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/leaderboard.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+	</head>
+	<body class="is-preload">
+		<!-- <a>&#8592;Back</a> -->
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main">
+						<header>
+							<!-- <p><a href="#">START GAME</a></p> -->
+							<div id="table-wrapper" >
+								<div class="table-scroll">
+								  <table class="sortable">
+									  <thead>
+										  <tr style="font-weight: bold;">
+											  <th><span class="text">Player</span></th>
+											  <th><span class="text">GP</span></th>
+											  <th><span class="text">Wins</span></th>
+											  <th><span class="text">KPG</span></th>
+											  <th><span class="text">PPG</span></th>
+											  <th><span class="text">Win %</span></th>
+										  </tr>
+									  </thead>
+									  <tbody id="ex-table">
+										<!--<tr> <td><a href="">Test</a></td> <td>2</td> <td>1</td> <td>1.5</td><td>4</td> <td>.500</td> </tr>-->
+										<!-- <tr> <td><a href="">Josh</a></td> <td>14</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
+										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
+										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
+										<tr> <td><a href="">Josh</a></td> <td>4</td> <td>3</td> <td>.5</td><td>3.5</td> <td>.750</td> </tr>
+									  --></tbody> 
+								  </table>
+								</div>
+							</div>							
+						</header>						
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; STOBLE</li><li>OUTHOUSE INC</li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+		<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+
+		<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+	  
+		<!-- Add Firebase products that you want to use -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-remote-config.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-performance.js"></script>
+		  
+		<script src="/__/firebase/init.js?useEmulator=true"></script>
+		<script>
+			function populate(){	
+				var database = firebase.database();
+				database.ref('/users/').once('value', function(snapshot){
+					if(snapshot.exists()){
+						var content = '';
+						snapshot.forEach(function(data){
+							console.log(data.key);
+							var val = data.val();
+							console.log(val);
+							console.log(val.username);
+							if (val.oGamesPlayed > 0 && !(val.username.includes("test"))){
+							content +='<tr>';
+							content += '<td style="letter-spacing: -.5px;"><a href="profile.html#' + data.key + '">' + val.username + '</a></td>';
+							 content += '<td>' + val.oGamesPlayed + '</td>';
+							 content += '<td>' + val.oWins + '</td>';
+							 content += '<td>' + (val.oPlunks/val.oGamesPlayed).toFixed(2) + '</td>';
+							 content += '<td>' + (val.oPoints/val.oGamesPlayed).toFixed(2) + '</td>';
+							 content += '<td>' + ((val.oWins/val.oGamesPlayed)*100).toFixed(2) + "%"+'</td>';
+							content += '</tr>';
+							}
+						});
+						
+						var table = document.getElementById("ex-table");
+						console.log(content);
+						$("#ex-table").append(content);
+						//table.append(content);
+					}
+				});
+			}
+			window.onload = function() {
+				populate();
+
+				// Default sort by win %
+				(document.getElementsByTagName( 'th' )[0]).click();
+				(document.getElementsByTagName( 'th' )[0]).click();
+			};
+		</script>
+		<script>
+			if ('addEventListener' in window) {
+				window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+				document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+			}
+		</script>
+		
+
+
+	</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<!--
+	Identity by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>dyeUp</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/open.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main">
+						<header>
+							<h1>Free Table</h1>
+							<ul>
+								<p><a href="new.html">New Game</a></p>
+								<p style="margin-top: -20px;" id="my-profile"></p>
+								<p style="margin-top: -20px;"><a href="leaderboard.html">Leaderboard</a></p>
+							</ul>							
+						</header>
+
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; STOBLE</li><li>OUTHOUSE INC</li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+		<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+
+		<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+	  
+		<!-- Add Firebase products that you want to use -->
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-functions.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-remote-config.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-performance.js"></script>
+		  
+		<script src="/__/firebase/init.js?useEmulator=true"></script>
+			<script>
+				
+				//var playerID="Bl5mNCX2EINWqDeegnKzpbjydP23";
+				var wins=0;
+				var losses=0;
+				var gamesPlayed=0;
+				var winStreak=0;
+				var longestStreak=0;
+				var users = [];
+				var userNames =[];
+				async function checkActiveGame(){
+					// redirect to game.html if active game
+					
+						var addPoints=false;
+							await firebase.database().ref('tables/-MTd1NleLOMft1aphqcw/games/').once('value', function(snapshot){
+								
+								if (snapshot.val() == null) {
+									// stay on open.html
+									
+								}
+								else{
+									var games = snapshot.forEach(function (childSnapshot) {
+									//console.log(playerId);
+										var value = childSnapshot.val();
+										console.log(value.id);
+										gameId=value.id;
+										
+										
+										if (value.id == "-MThqBkEBHiIIxlm_OMV"){
+											addPoints=true;
+										
+										}
+										
+										
+										if(addPoints){
+											var p1 =value.player1;
+											var p2 =value.player2;
+											var p3 =value.player3;
+											var p4 =value.player4;
+										
+										console.log(value.points);
+										childSnapshot.child("points").forEach(function (child){
+											var pointId= child.val().id;
+											var type= child.val().type;
+											if (type == 0){
+												firebase.database().ref('users/' + pointId).update({points: firebase.database.ServerValue.increment(1)});
+											}
+											else if (type == 1){
+											
+												firebase.database().ref('users/' + pointId).update({plunks: firebase.database.ServerValue.increment(1)});
+												firebase.database().ref('users/' + pointId).update({points: firebase.database.ServerValue.increment(1)});
+											}
+											console.log(pointId);
+											console.log(type);
+											
+										
+										});
+										
+										
+										}
+										
+										//console.log(value);
+										
+										/*if(value.t1Score == value.t2Score){
+											console.log("TIE ERROR");
+											console.log(gameId);
+										}
+										
+										if ((value.player1 == playerID || value.player2 == playerID)){
+											gamesPlayed=gamesPlayed+1;
+											
+											if(value.t1Score> value.t2Score) {
+											
+												wins=wins+1;
+												winStreak=winStreak+1;
+												if (winStreak > longestStreak){
+													longestStreak = winStreak;
+													firebase.database().ref('users/'+playerID).update({longStreak: winStreak});
+												}
+											}else if(value.t2Score> value.t1Score){
+											
+												losses=losses+1;
+												winStreak=0;
+											}
+										}
+										else if ((value.player3 == playerID || value.player4 == playerID)){
+											gamesPlayed=gamesPlayed+1;
+											if(value.t1Score> value.t2Score) {
+												losses=losses+1;
+												winStreak=0;
+											}else if(value.t2Score> value.t1Score){
+												wins=wins+1;
+												winStreak=winStreak+1;
+												if (winStreak > longestStreak){
+													longestStreak = winStreak;
+													firebase.database().ref('users/'+playerID).update({longStreak: winStreak});
+												}
+											}
+										}
+										console.log("games played: "+gamesPlayed);
+										console.log("wins: "+wins);
+										console.log("losses:  "+losses);
+										console.log("win streak:" + winStreak);
+										console.log(userNames[users.indexOf(playerID)] +" longest streak:" + longestStreak);*/
+									});
+								}
+							});
+						
+						
+					
+				}
+
+				
+
+				
+				window.onload = async function() {
+					
+					
+					checkActiveGame();	
+					
+				};
+			</script>
+			<script>
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+			</script>
+
+	</body>
+</html>
